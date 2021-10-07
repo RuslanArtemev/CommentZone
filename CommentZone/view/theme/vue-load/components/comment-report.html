@@ -1,0 +1,52 @@
+<script type="text/x-template" id="comment-report-template">
+  <div class="modal fade show">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">{{ $root.language.report }}</h5>
+          <button type="button" class="btn-close"></button>
+        </div>
+        <div class="modal-body py-0">
+          <textarea rows="3" v-focus auto-height v-model.trim="text" class="form-control"></textarea>
+        </div>
+        <div class="modal-footer border-0">
+          <span class="cz-count-text font-weight-light me-2" :class="text.length > $root.config.report_length ? 'text-danger' : 'text-black-50'">
+            {{ text.length }}/{{ $root.config.report_length }}
+          </span>
+          <button type="button" class="btn btn-primary" :disabled="sentDisabled" @click="sendReport">{{ $root.language.send }}</button>
+          <button type="button" class="btn btn-secondary" @click="close">{{ $root.language.close }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script>
+  Vue.component('comment-report', {
+    template: '#comment-report-template',
+    data: function () {
+      return {
+        text: '',
+        sentDisabled: false,
+      }
+    },
+    props: ['cid'],
+    methods: {
+      sendReport: function () {
+        this.sentDisabled = true;
+        this.$root.wait = true;
+
+        axios.post(this.$root.apiPath, { action: 'sendReport', cid: this.cid, text: this.text }).then(response => {
+          this.sentDisabled = false;
+          this.$root.wait = false;
+
+          this.close();
+          this.$root.toastShow(this.$root.language.report_sent);
+        });
+      },
+      close: function () {
+        this.$root.idCommentReport = 0;
+      }
+    }
+  });
+</script>

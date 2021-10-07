@@ -1,0 +1,31 @@
+<script type="text/x-template" id="comment-delete-template">
+  <div class="modal fade show">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ $root.language.delete }}</h5>
+          <button type="button" class="btn-close" @click="$root.deleteComment = {}"></button>
+        </div>
+        <div class="modal-body px-4">
+          {{ $root.language.confirm_delete_comment }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" :disabled="disabled" @click="$emit('delete')">{{ $root.language.delete }}</button>
+          <button type="button" class="btn btn-secondary" @click="$emit('close')">{{ $root.language.close }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script>
+  Vue.component('comment-delete', {
+    template: '#comment-delete-template',
+    data: function () {
+      return {
+
+      }
+    },
+    props: ['disabled'],
+  });
+</script>

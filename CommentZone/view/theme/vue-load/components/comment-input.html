@@ -1,0 +1,465 @@
+<script type="text/x-template" id="comment-input-template">
+  <div>
+    <div class="row border py-2 mt-2 mx-0" :class="$root.comments[id] && $root.comments[id].error.text ? 'cz-is-invalid is-invalid' : ''">
+      <div class="col-12" style="max-height: 200px;overflow: auto;">
+        <textarea :ref="'text-' + id" v-auto-height rows="2" class="w-100 border-0 p-0 cz-input-text-block" v-focus v-model="answerText[id]" v-on:input="inputAnswerComment(id)" :placeholder="$root.language.enter_comment"></textarea>
+        <div v-if="answerAttach[id] && answerAttach[id].length > 0" class="cz-attach row px-2">
+          <div v-for="(item, key) in answerAttach[id]" :key="key" class="col-auto m-1 p-0 cz-img-mini">
+            <div v-if="item">
+              <span class="cz-close pointer" @click="actionDeleteAttach(key)">&times;</span>
+              <img class="border" :src="(item.type === 'image' || item.resource === 'tiktok' ? $root.config.resource : '') + item.preview" width="50px" height="50px" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 my-2">
+        <div class="row">
+          <div v-if="$root.user.id && $root.user.role !== 'anonim'" class="col">
+            <div class="row">
+              <div v-if="$root.config.images" class="col-auto pr-1">
+                <div>
+                  <label class="cz-icon-control-to-form cz-icon-image-upload" :for="'cz-upload-images-' + id"></label>
+                  <input @change="actionUploadImages" class="d-none" type="file" name="images" accept="image/jpeg,image/png" multiple :id="'cz-upload-images-' + id">
+                </div>
+              </div>
+              <div v-if="$root.config.video" class="col-auto px-1">
+                <div class="cz-icon-control-to-form cz-icon-video" @click="addVideoModal = true"></div>
+                <div v-if="addVideoModal" :class="addVideoModal ? 'fade show' : ''" class="modal">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header border-0">
+                        <h5 class="modal-title">{{ $root.language.add_video }}</h5>
+                        <button type="button" class="btn-close" @click="addVideoModal = false"></button>
+                      </div>
+                      <div class="modal-body">
+                        <form>
+                          <div class="form-group">
+                            <label :for="'cz-link-video-input' + id">{{ $root.language.enter_link }}</label>
+                            <input v-model="linkVideo" type="text" class="form-control" :class="addVideoError ? 'cz-is-invalid is-invalid' : ''"  v-on:input="addVideoError = ''" :id="'cz-link-video-input' + id">
+                            <small v-if="addVideoError" class="invalid-feedback">{{ addVideoError }}</small>
+                            <small v-else class="form-text text-muted">{{ $root.language.video_service_name_list }}</small>
+                          </div>
+                        </form>
+                      </div>
+                      <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-primary" @click="actionAddVideo()">{{ $root.language.send }}</button>
+                        <button type="button" class="btn btn-secondary" @click="addVideoModal = false">{{ $root.language.close }}</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-if="$root.config.emoji" class="col-auto px-1 dropdown cz-emoji-block" @mouseenter="emojiBlockPosition($event)">
+                <div class="cz-icon-control-to-form cz-icon-smiles"></div>
+                <div class="dropdown-menu cz-emoji-box">
+                  <comment-emoji :prefix-id="comment.prefixId + '-' + action"></comment-emoji>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col text-end">
+            <span class="cz-count-text font-weight-light me-2" :class="answerText[id] && answerText[id].length > $root.config.text_length ? 'text-danger' : 'text-black-50'">
+              {{answerText[id] ? answerText[id].length : 0}}/{{$root.config.text_length}}
+            </span>
+            <button type="button" class="btn cz-btn-grey btn-sm csAnswerSubmit" :disabled="sentDisabled" v-on:click="sentComment($event)">
+              <span>{{ $root.language.send }}</span>
+              <span v-if="$root.user.id === undefined && $root.config.anonimus"> {{ $root.language.send_anonymous }}</span>
+            </button>
+            <button type="button" class="btn cz-btn-grey btn-sm csAnswerClose" v-on:click="actionClose()">{{ $root.language.close }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="$root.comments[id]" class="invalid-feedback">{{ $root.comments[id].error.text }}</div>
+  </div>
+</script>
+
+<script>
+  Vue.component('comment-input', {
+    template: '#comment-input-template',
+    data() {
+      return {
+        answerText: {},
+        answerAttach: {},
+        linkVideo: '',
+        addVideoModal: false,
+        addVideoError: '',
+        sentDisabled: false,
+      }
+    },
+    props: ["id", "comment", "action"],
+    created: function () {
+      if (this.action === 'answer') {
+        this.answerText = JSON.parse(localStorage.getItem('answer-' + this.$root.url)) || {};
+        this.answerAttach = JSON.parse(localStorage.getItem('answerAttach-' + this.$root.url)) || {};
+      }
+      if (this.action === 'edit') {
+        this.$set(this.answerText, this.id, this.comment.textOrigin);
+        this.$set(this.answerAttach, this.id, this.comment.attach);
+      }
+    },
+    methods: {
+      emojiBlockPosition(event) {
+        let emojiBox = event.target.getElementsByClassName("cz-emoji-box")[0];
+        let screenWindowHeight = window.innerHeight;
+
+        let emojiBoxCoordinates = emojiBox.getBoundingClientRect();
+        let emojiBlockHeight = emojiBoxCoordinates.height;
+        let emojiBlockTop = emojiBoxCoordinates.top;
+
+        if (emojiBlockTop > screenWindowHeight - emojiBlockHeight) {
+          emojiBox.style.bottom = '30px';
+          emojiBox.style.top = 'auto';
+        } else if (emojiBlockTop <= 0) {
+          emojiBox.removeAttribute("style");
+        }
+      },
+      inputAnswerComment: function (id) {
+        //Update info in localStorage
+        if (this.$root.comments[id]) {
+          this.$root.comments[id].error.text = '';
+
+          this.$root.timeout = 0;
+        }
+        if (this.action === 'answer') {
+          localStorage.setItem('answer-' + this.$root.url, JSON.stringify(this.answerText));
+        }
+      },
+      setAnswerComment: function () {
+        if (!this.$root.config.anonimus && this.$root.user.id === undefined) {
+          return false;
+        }
+
+        if (this.answerText[this.id]) {
+          this.answerText[this.id] = this.answerText[this.id].trim();
+        }
+
+        if ((this.answerText[this.id] === undefined || this.answerText[this.id] === '') && (!this.answerAttach[this.id] || this.answerAttach[this.id].length === 0)) {
+          Vue.set(this.$root.comments, this.id, {
+            error: {
+              text: this.$root.language.empty_field
+            }
+          });
+          return false;
+        }
+
+        if (this.answerText[this.id] !== undefined && this.answerText[this.id].length > this.$root.config.text_length) {
+          Vue.set(this.$root.comments, this.id, {
+            error: {
+              text: this.$root.language.character_limit_exceeded
+            }
+          });
+          return false;
+        }
+
+        this.$root.recaptchaValidate({ type: 'answer', node: this, id: this.comment.id }, (success) => {
+          if (success) {
+            this.sentDisabled = true;
+            this.$root.wait = true;
+
+            axios.post(this.$root.apiPath, {
+              action: 'setAnswerComment',
+              pid: this.comment.id,
+              parentType: this.comment.type,
+              url: this.$root.url,
+              bindId: this.$root.bindId,
+              text: this.answerText[this.id],
+              attach: this.answerAttach[this.id],
+              title: document.head.querySelector('title').innerText,
+            }).then(response => {
+              this.sentDisabled = false;
+              this.$root.wait = false;
+
+              if (response.data.length === 0 || !response.data.status) {
+                return false;
+              }
+
+              if (response.data.status === 'error-upload-images') {
+                Vue.set(this.$root.comments, this.id, {
+                  error: {
+                    text: this.$root.language.error_upload_images
+                  }
+                });
+                return false;
+              }
+
+              if (response.data.status === 'stop_words') {
+                Vue.set(this.$root.comments, this.id, {
+                  error: {
+                    text: this.$root.language.forbidden_words + ' - (' + response.data.words + ')'
+                  }
+                });
+                return false;
+              }
+
+              if (response.data.status === 'spam') {
+                Vue.set(this.$root.comments, this.id, {
+                  error: {
+                    text: this.$root.language.message_like_spam
+                  }
+                });
+                return false;
+              }
+
+              if (response.data.status === 'timeout') {
+                var title = this.$root.language.timeout + ': ';
+                this.$root.timeout = response.data.timer;
+
+                Vue.set(this.$root.comments, this.id, {
+                  error: {
+                    text: title + this.$root.timeout
+                  }
+                });
+
+                var timerId = setInterval(() => {
+                  if (this.$root.timeout === 0) {
+                    clearInterval(timerId);
+                    this.inputAnswerComment(this.id);
+                    return false;
+                  }
+
+                  this.$root.timeout--
+
+                  Vue.set(this.$root.comments, this.id, {
+                    error: {
+                      text: title + this.$root.timeout
+                    }
+                  });
+                }, 1000);
+
+                return false;
+              }
+
+              if (response.data.status === 'moderation') {
+                this.$root.toastShow(this.$root.language.comment_sent_moderation);
+              }
+
+              this.$parent.answerInputClose(this.comment.prefixId);
+
+              if (response.data.status === 'success') {
+                if (this.$root.commentsAnswer[response.data.answer.pathStr] === undefined) {
+                  this.$set(this.$root.commentsAnswer, response.data.answer.pathStr, {})
+                }
+                this.$set(this.$root.commentsAnswer[response.data.answer.pathStr], response.data.answer.id, response.data.answer)
+                this.$root.count.answer++
+                this.comment.countChild++
+              }
+
+              this.$root.user = response.data.currentUser;
+
+              delete this.answerText[this.id];
+              delete this.answerAttach[this.id];
+              this.inputAnswerComment(this.id);
+
+              localStorage.setItem('answerAttach-' + this.$root.url, JSON.stringify(this.answerAttach));
+
+            });
+          }
+        });
+      },
+      updateComment: function () {
+        if (this.$root.user.id === undefined) {
+          return false;
+        }
+
+        if (this.answerText[this.id]) {
+          this.answerText[this.id] = this.answerText[this.id].trim();
+        }
+
+        if ((this.answerText[this.id] === undefined || this.answerText[this.id] === '') && (!this.answerAttach[this.id] || this.answerAttach[this.id].length === 0)) {
+          Vue.set(this.$root.comments, this.id, {
+            error: {
+              text: this.$root.language.empty_field
+            }
+          });
+          return false;
+        }
+
+        this.sentDisabled = true;
+        this.$root.wait = true;
+
+        axios.post(this.$root.apiPath, {
+          action: 'updateComment',
+          id: this.comment.id,
+          type: this.comment.type,
+          url: this.$root.url,
+          bindId: this.$root.bindId,
+          text: this.answerText[this.id],
+          attach: this.answerAttach[this.id] || null,
+          title: document.head.querySelector('title').innerText,
+          datePublished: this.comment.datePublished.origin,
+        }).then(response => {
+          this.sentDisabled = false;
+          this.$root.wait = false;
+
+          if (!response.data.status) {
+            return false;
+          }
+
+          if (response.data.status === 'stop_words') {
+            Vue.set(this.$root.comments, this.id, {
+              error: {
+                text: this.$root.language.forbidden_words + ' - (' + response.data.words + ')'
+              }
+            });
+            return false;
+          }
+
+          if (response.data.status === 'spam') {
+            Vue.set(this.$root.comments, this.id, {
+              error: {
+                text: this.$root.language.message_like_spam
+              }
+            });
+            return false;
+          }
+
+          if (response.data.status === 'moderation') {
+            this.$root.toastShow(this.$root.language.comment_sent_moderation);
+          }
+
+          if (response.data.status === 'success') {
+            this.$set(this.comment, 'textOrigin', response.data.textOrigin);
+            this.$set(this.comment, 'text', response.data.text);
+            this.$set(this.comment, 'attach', response.data.attach);
+          }
+
+          delete this.answerText[this.id];
+          delete this.answerAttach[this.id];
+
+          this.$parent.editCommentsToggle(this.comment.prefixId);
+
+        });
+      },
+      actionUploadImages: function () {
+        if (!this.answerAttach[this.id]) {
+          this.$set(this.answerAttach, this.id, []);
+        }
+        var lastIndex = this.answerAttach[this.id].length;
+        var lenfiles = event.target.files.length;
+
+        for (const key in event.target.files) {
+          if (Object.hasOwnProperty.call(event.target.files, key)) {
+            const element = event.target.files[key];
+
+            var data = new FormData;
+            data.append('action', 'uploadImages');
+            data.append('type', 'answer');
+            data.append('file', element);
+
+            this.answerAttach[this.id].push({
+              preview: '/img/icons/spinner.gif',
+              type: 'image'
+            });
+
+            axios.post(this.$root.apiPath, data).then(response => {
+              if (response.data === "limit_size") {
+                this.$set(this.$root.comments, this.id, {
+                  error: {
+                    text: lenfiles > 1 ? this.$root.language.some_images_size_long : this.$root.language.images_size_long
+                  }
+                });
+                this.answerAttach[this.id].splice(lastIndex, 1);
+
+                if (this.action === 'answer') {
+                  localStorage.setItem('answerAttach-' + this.$root.url, JSON.stringify(this.answerAttach));
+                }
+
+                return false;
+              }
+
+              if (response.data !== false && typeof response.data === 'object') {
+                for (const key in response.data) {
+                  if (Object.hasOwnProperty.call(response.data, key)) {
+                    const element = response.data[key];
+
+                    this.answerAttach[this.id].splice(lastIndex++, 1, element);
+                  }
+                }
+
+                if (this.action === 'answer') {
+                  localStorage.setItem('answerAttach-' + this.$root.url, JSON.stringify(this.answerAttach));
+                }
+              } else {
+                this.answerAttach[this.id].splice(lastIndex, 1);
+              }
+            });
+          }
+        }
+      },
+      actionAddVideo: function () {
+        if (this.linkVideo === '') {
+          this.addVideoError = this.$root.language.empty_field;
+          return false;
+        }
+        if (!this.answerAttach[this.id]) {
+          this.$set(this.answerAttach, this.id, []);
+        }
+        var lastIndex = this.answerAttach[this.id].length;
+
+        this.answerAttach[this.id].push({
+          preview: '/img/icons/spinner.gif',
+          type: 'image'
+        });
+
+        axios.post(this.$root.apiPath, {
+          action: 'addVideo',
+          link: this.linkVideo
+        }).then(response => {
+          if (!response.data) {
+            this.$delete(this.answerAttach, this.id);
+            return false;
+          }
+
+          this.answerAttach[this.id].splice(lastIndex, 1, response.data);
+          this.addVideoModal = false;
+          this.linkVideo = '';
+
+          if (this.action === 'answer') {
+            localStorage.setItem('answerAttach-' + this.$root.url, JSON.stringify(this.answerAttach));
+          }
+        });
+      },
+      actionDeleteAttach: function (index) {
+        if (this.answerAttach[this.id][index].type === 'image') {
+          axios.post(this.$root.apiPath, {
+            action: 'deleteImages',
+            attach: this.answerAttach[this.id][index]
+          }).then(response => {
+            this.answerAttach[this.id].splice(index, 1);
+            if (this.answerAttach[this.id].length === 0) {
+              this.$delete(this.answerAttach, this.id);
+            }
+            if (this.action === 'answer') {
+              localStorage.setItem('answerAttach-' + this.$root.url, JSON.stringify(this.answerAttach));
+            }
+          });
+        } else {
+          this.answerAttach[this.id].splice(index, 1);
+          if (this.answerAttach[this.id].length === 0) {
+            this.$delete(this.answerAttach, this.id);
+          }
+          if (this.action === 'answer') {
+            localStorage.setItem('answerAttach-' + this.$root.url, JSON.stringify(this.answerAttach));
+          }
+        }
+      },
+      actionClose: function () {
+        if (this.action === 'answer') {
+          this.$parent.answerInputClose(this.comment.prefixId);
+        }
+        if (this.action === 'edit') {
+          this.$parent.editCommentsToggle(this.comment.prefixId);
+        }
+      },
+      sentComment: function () {
+        if (this.action === 'answer') {
+          this.setAnswerComment();
+        }
+        if (this.action === 'edit') {
+          this.updateComment();
+        }
+      }
+    },
+  });
+</script>

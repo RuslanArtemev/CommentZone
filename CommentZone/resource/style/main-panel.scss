@@ -1,0 +1,52 @@
+$backgroundBody: #303c4a;
+$textPale: #5c6775;
+$borderPale: #5e6c7d;
+$light: #b2bfcf;
+$lightHover: #8293a9;
+$form-feedback-invalid-color: #ff6271;
+$primary: #4f6177;
+$success: #0e9a87;
+$danger: #e63656;
+$blue: #3661d8;
+$warning: #f7dc6a;
+$dark: #2b3138;
+
+
+$screenComments: #323940;
+$input: #3d454e;
+$block: #2b3035;
+$buttons: #3c4552 /*#3b424c*/;
+$buttonsHover: #47515f;
+$buttonsText: #7e8894 /*#78828e*/;
+$buttonsTextHover: #96a1af;
+$buttonsOutline: #5c6979;
+$informers: #343a40;
+$switch: #0e9a87;
+
+.btn-blue {
+  background-color: $blue !important;
+  border-color: $blue !important;
+}
+.text-blue {
+  color: lighten($blue, 14%) !important;
+}
+.text-success {
+  color: lighten($success, 10%) !important;
+}
+.text-danger {
+  color: lighten($danger, 6%) !important;
+}
+.text-primary {
+  color: lighten($primary, 18%) !important;
+}
+.bg-pale {
+  background-color: $input !important;
+}
+.border-pale {
+  border-color: $input !important;
+}
+// .btn-dark {
+//   background-color: $dark;
+//   border-color: $dark;
+//   color: $buttonsText;
+// }

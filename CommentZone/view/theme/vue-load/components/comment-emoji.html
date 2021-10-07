@@ -1,0 +1,37 @@
+<script type="text/x-template" id="comment-emoji-template">
+  <div class="col px-2" style="min-width: 15rem;">
+    <div v-for="(item, key) in $root.emoji" :key="key" class="cz-emoji-element" @click="insertEmoji(key)">
+      <span class="cz-emoji-item" :style="'background-position: -' + item[0] + 'px -' + item[1] + 'px;'"></span>
+    </div>
+  </div>
+</script>
+
+<script>
+  Vue.component('comment-emoji', {
+    template: '#comment-emoji-template',
+    data: function () {
+      return {
+      }
+    },
+    props: ['prefixId'],
+    methods: {
+      insertEmoji: function (key) {
+        var el = this.$parent.$refs['text-' + this.prefixId][0] || this.$parent.$refs['text-' + this.prefixId];
+        var start = el.selectionStart;
+        var end = el.selectionEnd;
+        var emoji = key;
+
+        el.value = el.value.substring(0, start) + emoji + el.value.substring(end);
+        el.focus();
+        el.selectionEnd = start + emoji.length;
+
+        if (this.prefixId == 0) {
+          this.$parent.mainText = el.value;
+        } else {
+          this.$set(this.$parent.answerText, this.prefixId, el.value);
+          localStorage.setItem('answer-' + this.$root.url, JSON.stringify(this.$parent.answerText));
+        }
+      }
+    }
+  })
+</script>

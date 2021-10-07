@@ -1,0 +1,261 @@
+<script type="text/x-template" id="comment-views-template">
+  <div class="comment-box position-relative">
+    <div v-for="(comment, key) in comments" :key="key" class="media mt-3 mb-2" v-if="comment.posted == 1 || ($root.commentsAnswer[comment.pathStr + (comment.pathStr ? '.' : '') + comment.id] && comment.countChild > 0)">
+      <div class="media-body" style="font-size: 14px;">
+
+        <div class="cz-comment-element">
+          <div class="row" :class="comment.posted == 0 ? 'cz-posted-none' : ''">
+            <div class="col-auto">
+              <div class="cz-avatar-block" :class="comment.posted == 0 ? 'cz-posted-none' : ''">
+                <span v-if="(!comment.authorAvatar || !comment.authorAvatar.small) && $root.config.avatarSimbol" class="cz-avatar cz-simbol" :style="'background:' + comment.authorAvatar" v-html="comment.authorName.substring(0, 1)"></span>
+                <img v-else class="cz-avatar" :src="comment.authorAvatar && comment.authorAvatar.small && comment.authorRole !== 'guest' ? $root.config.resource + comment.authorAvatar.small : $root.config.resource + '/img/avatars/default.jpg'" alt="">
+              </div>
+            </div>
+            <div class="col-auto p-0">
+              <div class="row">
+                <div class="col-auto cz-author-name">
+                  <span>{{ comment.authorName + (comment.authorRole === 'anonim' && comment.authorDeleted === 0 ? '-' + comment.authorPuid : '') }}</span>
+                  <span v-if="comment.authorRole === 'admin' || comment.authorRole === 'moder'" class="badge bg-danger" style="font-size: 10px; padding: .1em .5em .2em;">{{ comment.authorRole }}</span>
+                </div>
+                <div v-if="parentComment" class="col-auto ps-0 ms-3 text-dim cz-parent-name position-relative">{{ parentComment.authorName + (parentComment.authorRole === 'anonim' && parentComment.authorDeleted === 0 ? '-' + parentComment.authorPuid : '') }}</div>
+              </div>
+              
+              <div class="text-dim" :title="comment.datePublished.title">{{ comment.datePublished.view }}</div>
+            </div>
+          </div>
+
+          <div v-if="!editCommentShow(comment.prefixId)" v-blockSize>
+            <div v-if="comment.text !== ''" class="cz-text-view py-1" :class="comment.posted == 0 ? 'cz-posted-none' : ''" v-html="comment.text"></div>
+
+            <div v-if="comment.attach && comment.attach.length > 0" class="row my-2 mx-1">
+              <div v-for="(attach, key) in comment.attach" :key="key" class="col-auto p-1 position-relative pointer" :class="attach && attach.type === 'video' ? 'cz-video-play' : ''" @click="imagePreview(comment.id, key)">
+                <img v-if="attach" height="100" :src="attach.type === 'image' ? $root.config.resource + attach.middle : (attach.resource === 'tiktok' ? $root.config.resource : '') + attach.preview" alt="">
+              </div>
+            </div>
+          </div>
+
+          <comment-input v-if="editCommentShow(comment.prefixId)" :comment="comment" :id="comment.prefixId + '-edit'" action="edit"></comment-input>
+
+          <div v-if="comment.posted == 1" class="row">
+            <div v-if="$root.config.rating" class="col-auto ms-3 me-1 p-0 pointer font-small text-dim">
+              <div class="row">
+                <div class="col-auto px-1 pointer cz-rating-button-left" :style="$root.wait ? 'cursor: wait' : ''" @click="setRating('decrease', comment)">
+                  <svg v-if="!comment.rating.uidDecrease || comment.rating.uidDecrease.indexOf($root.user.id) === -1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+                    <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659l4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                  </svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                    <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                  </svg>
+                </div>
+                <div class="col-auto px-1 cz-text-select-0 " :class="comment.rating.increase + comment.rating.decrease > 0 ? 'cz-text-green fw-bold' : (comment.rating.increase + comment.rating.decrease < 0 ? 'text-danger fw-bold' : '')">{{ comment.rating.increase + comment.rating.decrease }}</div>
+                <div class="col-auto px-1 pointer cz-rating-button-right" :style="$root.wait ? 'cursor: wait' : ''" @click="setRating('increase', comment)">
+                  <svg v-if="!comment.rating.uidIncrease || comment.rating.uidIncrease.indexOf($root.user.id) === -1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
+                    <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659l4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                  </svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                    <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="col-auto p-0 ms-3 pointer font-small cz-button-action" v-if="!answerInputShow(comment.prefixId)" @click="($root.user.id && $root.user.permission.indexOf('answer_comment') !== -1) || $root.config.anonimus ? answerInputOpen(comment.prefixId) : ''">{{ $root.language.reply }}</div>
+            <div class="col-auto p-0 ms-3 pointer font-small cz-button-action" v-else v-on:click="answerInputClose(comment.prefixId)">{{ $root.language.close }}</div>
+
+            <div v-if="$root.user.id" class="col-auto dropdown">
+              <div class="dropup">
+                <div class="col-auto p-0 ms-1 pointer" @click="actionCommentControlsToggle(comment.prefixId)">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 256 256" width="20px" height="20px" class="cz-comment-controls">
+                    <path opacity="0.4" d="M80,128a16,16,0,1,1-16-16A16.01833,16.01833,0,0,1,80,128Zm112-16a16,16,0,1,0,16,16A16.01833,16.01833,0,0,0,192,112Zm-64,0a16,16,0,1,0,16,16A16.01833,16.01833,0,0,0,128,112Z"/>
+                  </svg>
+                </div>
+                <div class="dropdown-menu cz-comment-control-menu" :class="commentControlsShow(comment.prefixId) ? 'show' : ''" style="font-size:14px;">
+                  <div v-if="($root.user.permission.indexOf('delete_comment') !== -1 && $root.user.id == comment.authorId) || $root.user.permission.indexOf('manage_comments') !== -1" class="dropdown-item px-3 py-0 pointer" @click="$root.deleteComment = {id: comment.id, type: comment.type, path: (comment.type === 'answer' ? comment.pathStr : key)}">{{ $root.language.delete }}</div>
+                  <div v-if="($root.user.permission.indexOf('update_comment') !== -1 && $root.user.id == comment.authorId && ($root.currentTime - comment.datePublished.seconds) < ($root.config.editTime * 60) && $root.config.edit) || $root.user.permission.indexOf('manage_comments') !== -1" class="dropdown-item px-3 py-0 pointer" @click="editCommentsToggle(comment.prefixId)">{{ $root.language.edit }}</div>
+                  <div class="dropdown-item px-3 py-0 pointer" @click="$root.idCommentReport = comment.id">{{ $root.language.send_report }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div v-else class="row">
+            <div class="col-auto pe-0 pointer font-small cz-button-action" v-if="comment.posted == 0 && $root.user.id && $root.user.permission.indexOf('manage_comments') !== -1" @click="recover(comment)">{{ $root.language.recover }}</div>
+          </div>
+        </div>
+
+        <comment-input v-if="answerInputShow(comment.prefixId)" :comment="comment" :id="comment.prefixId + '-answer'" action="answer"></comment-input>
+
+        <div class="answer-block border-start ps-4" v-if="comment.countChild > 0 && $root.commentsAnswer[comment.pathStr + (comment.pathStr ? '.' : '') + comment.id]">
+          <div class="more-comments-activate mt-1" :class="!moreCommentsShow(comment.prefixId, comment.countChild) ? 'more-hide' : 'more-show'">
+            <span class="more-comments-icon" @click="actionMoreCommentsToggle(comment.prefixId)"></span>
+            <span class="more-comments-title text-dim text-nowrap pointer" @click="actionMoreCommentsToggle(comment.prefixId)">{{ $root.language.more_comments }} {{comment.countChild}}</span>
+          </div>
+          <comments-view :class="!moreCommentsShow(comment.prefixId, comment.countChild) ? 'd-none' : ''" :comments="$root.commentsAnswer[comment.pathStr + (comment.pathStr ? '.' : '') + comment.id]" :parent-comment="comment" type="answer"></comments-view>
+        </div>
+
+      </div>
+      
+      <comment-images v-if="showImages.indexOf(comment.id) !== -1" :images="comment.attach" :index="imageSelected" @click="imagePreviewClose($event)"></comment-images>
+    </div>
+  </div>
+</script>
+
+<script>
+  Vue.component('comments-view', {
+    template: '#comment-views-template',
+    data: function () {
+      return {
+        imageSelected: 0,
+        answerInput: [],
+        editComments: [],
+        showCommentControls: [],
+        showMore: [],
+        showMoreLength: 10,
+        showImages: [],
+      }
+    },
+    props: ['comments', 'parentComment'],
+    directives: {
+      blockSize: {
+        inserted: function (el) {
+          if (el.offsetHeight > 260) {
+            el.style.overflow = 'hidden';
+            el.style.height = 260 + 'px';
+            el.style.cursor = 'pointer';
+            el.classList.add("cz_block_size");
+
+            el.addEventListener('click', event => {
+              el.style = null;
+              el.classList.remove("cz_block_size");
+            });
+          }
+        }
+      }
+    },
+    mounted() {
+      document.addEventListener('click', e => {
+        if (Object.values(e.target.classList).indexOf('cz-comment-control-menu') === -1 && Object.values(e.target.classList).indexOf('cz-comment-controls') === -1) {
+          this.showCommentControls = [];
+        }
+      }, false);
+    },
+    methods: {
+      recover(comment) {
+        this.$root.wait = true;
+
+        axios.post(this.$root.apiPath, {
+          action: 'recoverComment',
+          id: comment.id,
+          type: comment.type,
+        }).then(response => {
+          this.$root.wait = false;
+
+          if (response.data.recover === true) {
+            comment.posted = 1;
+            comment.new = 0;
+            comment.text = response.data[comment.type].text;
+            comment.textOrigin = response.data[comment.type].textOrigin;
+            comment.attach = response.data[comment.type].attach;
+          }
+        });
+      },
+      setRating(exp, comment) {
+        if (!this.$root.user || this.$root.user.length === 0) {
+          this.$root.toastShow(this.$root.language.you_not_authorize, 'bg-danger');
+          return false;
+        }
+        if (this.$root.user.permission.indexOf("rating_impact") === -1) {
+          this.$root.toastShow(this.$root.language.not_access_feature, 'bg-danger');
+          return false;
+        }
+
+        this.$root.wait = true;
+
+        axios.post(this.$root.apiPath, {
+          action: 'setRating',
+          id: comment.id,
+          exp: exp
+        }).then(response => {
+          this.$root.wait = false;
+
+          if (response.data.success) {
+            comment.rating.increase = response.data.result.increase;
+            comment.rating.decrease = response.data.result.decrease;
+            comment.rating.uidIncrease = response.data.result.uidIncrease;
+            comment.rating.uidDecrease = response.data.result.uidDecrease;
+          }
+        });
+      },
+      imagePreview: function (idComment, indexImage) {
+        this.showImages.push(idComment);
+        this.imageSelected = indexImage;
+      },
+      imagePreviewClose: function (event) {
+        if (event === 'close') {
+          this.showImages = [];
+          this.imageSelected = 0;
+        }
+      },
+      editCommentShow: function (id) {
+        if (this.editComments.indexOf(id) === -1) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      editCommentsToggle: function (id) {
+        var key = this.editComments.indexOf(id);
+
+        if (key === -1) {
+          this.editComments.push(id);
+        } else {
+          this.editComments.splice(key, 1);
+        }
+      },
+      answerInputShow: function (id) {
+        if (this.answerInput.indexOf(id) === -1) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      answerInputOpen: function (id) {
+        this.answerInput.push(id)
+      },
+      answerInputClose: function (id) {
+        this.answerInput.splice(this.answerInput.indexOf(id), 1)
+      },
+      actionMoreCommentsToggle: function (id) {
+        var key = this.showMore.indexOf(id);
+
+        if (key === -1) {
+          this.showMore.push(id);
+        } else {
+          this.showMore.splice(key, 1);
+        }
+      },
+      actionCommentControlsToggle: function (id) {
+        var key = this.showCommentControls.indexOf(id);
+
+        if (key === -1) {
+          this.showCommentControls.push(id);
+        } else {
+          this.showCommentControls.splice(key, 1);
+        }
+      },
+      moreCommentsShow: function (id, countChild) {
+        if ((countChild > this.showMoreLength && this.showMore.indexOf(id) === -1) || (countChild <= this.showMoreLength && this.showMore.indexOf(id) !== -1)) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      commentControlsShow: function (id) {
+        if (this.showCommentControls.indexOf(id) === -1) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    },
+  })
+</script>

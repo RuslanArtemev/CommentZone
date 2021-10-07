@@ -1,0 +1,31 @@
+/*#3b424c*/
+/*#78828e*/
+.btn-blue {
+  background-color: #3661d8 !important;
+  border-color: #3661d8 !important;
+}
+
+.text-blue {
+  color: #7290e4 !important;
+}
+
+.text-success {
+  color: #12c9b0 !important;
+}
+
+.text-danger {
+  color: #e9516d !important;
+}
+
+.text-primary {
+  color: #7b8fa7 !important;
+}
+
+.bg-pale {
+  background-color: #3d454e !important;
+}
+
+.border-pale {
+  border-color: #3d454e !important;
+}
+/*# sourceMappingURL=main-panel.css.map */

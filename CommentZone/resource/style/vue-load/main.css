@@ -1,0 +1,481 @@
+#CommentZone .d-none {
+  display: none;
+}
+
+#CommentZone .d-block {
+  display: block;
+}
+
+#CommentZone .pointer {
+  cursor: pointer;
+}
+
+#CommentZone .text-dim {
+  color: #a6adb3;
+}
+
+#CommentZone .cz-main-text {
+  resize: none;
+  outline: none;
+  overflow: hidden;
+  margin: 0;
+  background: transparent;
+}
+
+#CommentZone .cz-text-green {
+  color: #22c792;
+}
+
+#CommentZone .font-small {
+  font-size: small;
+}
+
+#CommentZone .cz-btn-grey {
+  border-color: #dee2e6;
+  color: #b6b6b6;
+}
+
+#CommentZone .cz-btn-grey:hover {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #FFF;
+}
+
+#CommentZone .cz-btn-muted {
+  background-color: #728094;
+  border-color: #728094;
+  color: #FFF;
+}
+
+#CommentZone .cz-btn-muted:hover {
+  background-color: #5f6b75;
+  border-color: #5f6b75;
+}
+
+#CommentZone .cz-is-invalid {
+  border-color: #dc3545 !important;
+}
+
+#CommentZone .close {
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+#CommentZone .toast-header {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+#CommentZone .cz-avatar-block {
+  padding-top: 6px;
+}
+
+#CommentZone .cz-avatar-block .cz-avatar {
+  width: 30px;
+  height: 30px;
+  display: block;
+  border-radius: 2px;
+}
+
+#CommentZone .cz-avatar-block .cz-avatar.cz-simbol {
+  line-height: 29px;
+  font-size: 14px;
+}
+
+#CommentZone .cz-avatar-min {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+
+#CommentZone .cz-avatar-min.cz-simbol {
+  line-height: 20px;
+  font-size: 13px;
+}
+
+#CommentZone .cz-author-name {
+  font-weight: 500;
+}
+
+#CommentZone .cz-parent-name::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: -20px;
+  width: 15px;
+  height: 15px;
+  background: url("../../img/icons/reply.png") center/cover no-repeat;
+  opacity: 0.5;
+}
+
+#CommentZone .cz-button-action {
+  color: #aaaaaa;
+}
+
+#CommentZone .cz-simbol {
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;
+  background-color: #c4ccdf;
+}
+
+#CommentZone .cz-icon-authorize {
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  margin: 5px;
+  margin-left: 0;
+  border-radius: 10%;
+}
+
+#CommentZone .cz-icon-authorize-menu {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  border-radius: 10%;
+  vertical-align: text-bottom;
+  margin-right: 5px;
+}
+
+#CommentZone .cz-auth-vk {
+  background: url("../../img/auth/vk.jpg") center/cover no-repeat;
+}
+
+#CommentZone .cz-auth-ok {
+  background: url("../../img/auth/ok.jpg") center/cover no-repeat;
+}
+
+#CommentZone .cz-auth-fb {
+  background: url("../../img/auth/fb.jpg") center/cover no-repeat;
+}
+
+#CommentZone .cz-auth-goo {
+  background: url("../../img/auth/google.jpg") center/cover no-repeat;
+}
+
+#CommentZone .cz-auth-mail {
+  background: url("../../img/auth/mail.jpg") center/cover no-repeat;
+}
+
+#CommentZone .cz-auth-ya {
+  background: url("../../img/auth/ya.jpg") center/cover no-repeat;
+}
+
+#CommentZone .cz-auth-more {
+  background: url("../../img/auth/more.jpg") center/cover no-repeat;
+}
+
+#CommentZone .close {
+  outline: none;
+}
+
+#CommentZone .modal.fade {
+  display: block;
+  background: #0000004d;
+}
+
+#CommentZone .cz-registration-avatar {
+  width: 30px;
+  height: 30px;
+  background: url("../../img/avatars/default.jpg") center/cover no-repeat;
+}
+
+#CommentZone .cz-posted-none {
+  opacity: 0.6;
+}
+
+#CommentZone .cz-icon-control-to-form {
+  width: 31px;
+  height: 31px;
+  display: block;
+  background: #f3f3f3;
+  border-radius: 50%;
+  position: relative;
+  margin: 0;
+  cursor: pointer;
+}
+
+#CommentZone .cz-icon-control-to-form::after {
+  content: "";
+  width: 18px;
+  height: 18px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -9px;
+  margin-left: -9px;
+}
+
+#CommentZone .cz-icon-image-upload::after {
+  content: "";
+  background: url("../../img/icons/image-upload.png") left/cover no-repeat;
+  opacity: 0.4;
+}
+
+#CommentZone .cz-icon-video::after {
+  content: "";
+  background: url("../../img/icons/video.png") left/cover no-repeat;
+  opacity: 0.4;
+}
+
+#CommentZone .cz-icon-smiles::after {
+  content: "";
+  background: url("../../img/icons/emoji.png") left/cover no-repeat;
+  opacity: 0.6;
+}
+
+#CommentZone .cz-emoji-block:hover .cz-emoji-box {
+  display: block;
+}
+
+#CommentZone .cz-emoji-block .cz-emoji-box {
+  margin-top: 0;
+}
+
+#CommentZone .cz-emoji-block .cz-emoji-box .cz-emoji-element {
+  padding: 2px 3px;
+  margin: 1px;
+  display: inline-block;
+  border-radius: 10%;
+  cursor: pointer;
+}
+
+#CommentZone .cz-emoji-block .cz-emoji-box .cz-emoji-element .cz-emoji-item {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background-image: url("../../img/emoji/smile.png");
+  background-repeat: no-repeat;
+  vertical-align: text-bottom;
+}
+
+#CommentZone .cz-emoji-block .cz-emoji-box .cz-emoji-element:hover {
+  background-color: #797979;
+}
+
+#CommentZone .cz-emoji-view {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background-image: url("../../img/emoji/smile.png");
+  background-repeat: no-repeat;
+  vertical-align: text-bottom;
+}
+
+#CommentZone .cz-attach .cz-img-mini {
+  position: relative;
+}
+
+#CommentZone .cz-attach .cz-img-mini:hover .cz-close {
+  display: block;
+}
+
+#CommentZone .cz-attach .cz-img-mini .cz-close {
+  position: absolute;
+  background-color: #868fa2;
+  color: #fff;
+  padding: 0px 3px;
+  font-size: 18px;
+  line-height: 19px;
+  right: 0;
+  display: none;
+}
+
+#CommentZone .cz-video-play::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
+  margin-left: -25px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: url("../../img/icons/play_video.png") center/cover no-repeat;
+}
+
+#CommentZone .answer-block {
+  position: relative;
+  border-left-style: dashed !important;
+}
+
+#CommentZone .answer-block .more-comments-activate {
+  margin-left: -28px;
+}
+
+#CommentZone .answer-block .more-comments-activate.more-show .more-comments-icon {
+  top: 0;
+  -webkit-transform: rotate(135deg);
+          transform: rotate(135deg);
+  -webkit-transition-duration: 0.1s;
+          transition-duration: 0.1s;
+  position: absolute;
+}
+
+#CommentZone .answer-block .more-comments-activate.more-show .more-comments-title {
+  display: none;
+}
+
+#CommentZone .answer-block .more-comments-activate.more-show::before {
+  height: 14px;
+}
+
+#CommentZone .answer-block .more-comments-activate .more-comments-icon {
+  position: relative;
+  cursor: pointer;
+  width: 7px;
+  height: 7px;
+  border-top: #828282 solid 1px;
+  border-right: #828282 solid 1px;
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
+  margin-right: 5px;
+  display: inline-block;
+  opacity: 0.7;
+}
+
+#CommentZone .answer-block .more-comments-activate::before {
+  content: "";
+  background-color: #ffffff;
+  width: 1px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: -1px;
+}
+
+#CommentZone .cz-count-text {
+  font-size: 12px;
+}
+
+#CommentZone .cz_block_size {
+  position: relative;
+}
+
+#CommentZone .cz_block_size::after {
+  content: "";
+  position: absolute;
+  background: -webkit-gradient(linear, left bottom, left top, from(white), to(rgba(255, 255, 255, 0)));
+  background: linear-gradient(0deg, white 0%, rgba(255, 255, 255, 0) 100%);
+  width: 100%;
+  height: 100px;
+  bottom: 0;
+}
+
+#CommentZone .cz-input-text-block {
+  resize: none;
+  outline: none;
+  overflow: hidden;
+  margin: 0;
+  background: transparent;
+}
+
+#CommentZone .cz-images-view-block {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #00000066;
+  font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  z-index: 999;
+}
+
+#CommentZone .cz-images-view-block .cz-images-view-panel-control {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+#CommentZone .cz-images-view-block .cz-images-view-panel-control .cz-btn {
+  font-size: 36px;
+  line-height: 1.45;
+  width: 60px;
+  height: 60px;
+  background: #101010;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+#CommentZone .cz-images-view-block .cz-images-view-close {
+  font-size: 34px;
+  line-height: 1.55;
+  width: 60px;
+  height: 60px;
+  background: #101010;
+  color: #fff;
+  text-align: center;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 10px;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  opacity: 0.5;
+}
+
+#CommentZone .cz-images-view-block .cz-images-view-close:hover {
+  opacity: 1;
+}
+
+#CommentZone .cz-images-view-block .cz-images-view-btn {
+  margin: 0 8%;
+  font-size: 30px;
+  line-height: 1.75;
+  width: 60px;
+  height: 60px;
+  background: #101010;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  opacity: 0.5;
+}
+
+#CommentZone .cz-images-view-block .cz-images-view-btn:hover {
+  opacity: 1;
+}
+
+#CommentZone .cz-images-view-block .cz-images-view-btn.cz-right {
+  float: right;
+}
+
+#CommentZone .cz-text-select-0 {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+#CommentZone .cz-rating-button-left:hover {
+  color: #dc3545;
+}
+
+#CommentZone .cz-rating-button-right:hover {
+  color: #22c792;
+}
+
+#CommentZone .modal.fade {
+  display: none;
+}
+
+#CommentZone .modal.fade.show {
+  display: block;
+}
+
+#CommentZone .cz-text-view {
+  word-break: break-word;
+}
+/*# sourceMappingURL=main.css.map */

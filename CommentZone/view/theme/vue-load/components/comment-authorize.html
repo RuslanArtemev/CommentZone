@@ -1,0 +1,539 @@
+<script type="text/x-template" id="comment-authorize-template">
+  <div class="modal fade show">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">{{ $root.language.login }}</h5>
+          <button type="button" class="btn-close" @click="$emit('close')"></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="row">
+            <div class="col-auto border-bottom pointer" :class="loginUserShow ? 'border-primary' : ''" @click="loginUserButton">{{ $root.language.login }}</div>
+            <div class="col-auto border-bottom pointer" v-if="$root.config.guest" :class="loginGuestShow ? 'border-primary' : ''" @click="loginGuestButton">{{ $root.language.login_guest }}</div>
+            <div class="col-auto border-bottom pointer" :class="registrationShow ? 'border-primary' : ''" @click="registrationButton">{{ $root.language.registration }}</div>
+            <div class="col border-bottom"></div>
+          </div>
+
+          <div v-if="loginUserShow" class="pt-4">
+            <form>
+              <div class="form-group mb-3">
+                <label for="csAuthEmail">{{ $root.language.email }}</label>
+                <input v-model="userAuth.email" @input="userAuth.error.email = ''" type="email" class="form-control" :class="userAuth.error.email ? 'is-invalid' : ''" id="csAuthEmail">
+                <div class="invalid-feedback">{{ userAuth.error.email }}</div>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="csAuthPassword">{{ $root.language.password }}</label>
+                <input v-model="userAuth.password" @input="userAuth.error.password = ''" type="password" class="form-control" :class="userAuth.error.password ? 'is-invalid' : ''" id="csAuthPassword">
+                <div class="invalid-feedback">{{ userAuth.error.password }}</div>
+              </div>
+
+              <div class="text-end">
+                <span class="pointer text-decoration-underline" @click="$emit('show-reset-password')">{{ $root.language.forgot_password }}</span>
+              </div>
+
+              <div class="form-group mb-3 form-check">
+                <input v-model="userAuth.remember" type="checkbox" class="form-check-input" id="csAuthRemember">
+                <label class="form-check-label" for="csAuthRemember">{{ $root.language.remember_me }}</label>
+              </div>
+            </form>
+
+            <div v-if="$root.config.recaptcha" id='recaptchaUser' :class="userAuth.error.recaptcha ? 'is-invalid' : ''"></div>
+            <div class="invalid-feedback">{{ userAuth.error.recaptcha }}</div>
+          </div>
+
+          <div v-if="$root.config.guest && loginGuestShow" class="pt-4">
+            <form>
+              <div class="form-group mb-3">
+                <label for="csAuthGuestName">{{ $root.language.name }}*</label>
+                <input v-model="guestAuth.name" @input="guestAuth.error.name = ''" type="text" class="form-control" :class="guestAuth.error.name ? 'is-invalid' : ''" id="csAuthGuestName">
+                <div class="invalid-feedback">{{ guestAuth.error.name }}</div>
+              </div>
+              <div class="form-group mb-3">
+                <label for="csAuthGuestEmail">{{ $root.language.email }}<span v-if="$root.config.guest_email_required">*</span></label>
+                <input v-model="guestAuth.email" @input="guestAuth.error.email = ''" type="email" class="form-control" :class="guestAuth.error.email ? 'is-invalid' : ''" id="csAuthGuestEmail">
+                <div class="invalid-feedback">{{ guestAuth.error.email }}</div>
+              </div>
+              <div class="form-group mb-3 form-check">
+                <input v-model="guestAuth.remember" type="checkbox" class="form-check-input" id="csAuthGuestRemember">
+                <label class="form-check-label" for="csAuthGuestRemember">{{ $root.language.remember_me }}</label>
+              </div>
+            </form>
+
+            <div v-if="$root.config.recaptcha" id='recaptchaGuest' :class="guestAuth.error.recaptcha ? 'is-invalid' : ''"></div>
+            <div class="invalid-feedback">{{ guestAuth.error.recaptcha }}</div>
+          </div>
+
+          <div v-if="registrationShow" class="pt-4">
+            <form>
+              <div class="form-group mb-3">
+                <label for="csRegName">{{ $root.language.name }}*</label>
+                <input v-model="registration.name" @input="registration.error.name = ''" type="text" class="form-control" :class="registration.error.name ? 'is-invalid' : ''" id="csRegName">
+                <div class="invalid-feedback">{{ registration.error.name }}</div>
+              </div>
+              <div class="form-group mb-3">
+                <label for="csRegEmail">{{ $root.language.email }}*</label>
+                <input v-model="registration.email" @input="registration.error.email = ''" type="email" class="form-control" :class="registration.error.email ? 'is-invalid' : ''" id="csRegEmail">
+                <div class="invalid-feedback">{{ registration.error.email }}</div>
+              </div>
+              <div class="form-group mb-3">
+                <label for="csRegPassword1">{{ $root.language.password }}*</label>
+                <input v-model="registration.password1" @input="registration.error.password1 = ''" type="password" class="form-control" :class="registration.error.password1 ? 'is-invalid' : ''" id="csRegPassword1">
+                <div class="invalid-feedback">{{ registration.error.password1 }}</div>
+              </div>
+              <div class="form-group mb-3">
+                <label for="csRegPassword2">{{ $root.language.repeat_password }}*</label>
+                <input v-model="registration.password2" @input="registration.error.password2 = ''" type="password" class="form-control" :class="registration.error.password2 ? 'is-invalid' : ''" id="csRegPassword2">
+                <div class="invalid-feedback">{{ registration.error.password2 }}</div>
+              </div>
+              <div class="form-group mt-4 mb-0">
+                <div class="row">
+                  <div class="col-auto p-0 mx-3 cz-registration-avatar" :style="registration.avatar ? 'background: url(' + $root.config.resource + registration.avatar.small + ') center / cover no-repeat;' : ''"></div>
+                  <label class="col-auto btn btn-outline-primary btn-sm" for="csRegAvatar">{{ $root.language.add_avatar }}</label>
+                  <input v-on:change="actionUploadAvatar" type="file" class="d-none" accept="image/jpeg,image/png" id="csRegAvatar">
+                </div>
+              </div>
+            </form>
+
+            <div v-if="$root.config.recaptcha" id='recaptchaRegistration' class="mt-4" :class="registration.error.recaptcha ? 'is-invalid' : ''" @click="registration.error.recaptcha === ''"></div>
+            <div class="invalid-feedback">{{ registration.error.recaptcha }}</div>
+          </div>
+        </div>
+        
+        <div class="modal-footer border-0 px-4">
+          <button v-if="loginUserShow" type="button" class="btn btn-primary" @click="actionUserLogin">{{ $root.language.sign_in }}</button>
+          <button v-if="$root.config.guest && loginGuestShow" type="button" class="btn btn-primary" @click="actionGuestLogin">{{ $root.language.sign_in_guest }}</button>
+          <button v-if="registrationShow" type="button" class="btn btn-primary" @click="actionRegistration">{{ $root.language.sign_up }}</button>
+          <button type="button" class="btn btn-secondary" @click="$emit('close')">{{ $root.language.close }}</button>
+        </div>
+
+        <div v-if="loginUserShow && (socialAuth.vk || socialAuth.ok || socialAuth.fb || socialAuth.goo || socialAuth.mail || socialAuth.ya)" class="px-4 pt-2 pb-4">
+          <div class="row m-0 mb-2 text-black-50">
+            <div class="col mb-2 border-bottom"></div>
+            <div class="col-auto">{{ $root.language.sign_in_social }}</div>
+            <div class="col mb-2 border-bottom"></div>
+          </div>
+
+          <div class="row m-0 mb-3 justify-content-center">
+            <div class="col-auto cz-icon-authorize cz-auth-vk" v-if="socialAuth.vk" @click="oAuth('vk')"></div>
+            <div class="col-auto cz-icon-authorize cz-auth-ok" v-if="socialAuth.ok" @click="oAuth('ok')"></div>
+            <div class="col-auto cz-icon-authorize cz-auth-fb" v-if="socialAuth.fb" @click="oAuth('fb')"></div>
+            <div class="col-auto cz-icon-authorize cz-auth-goo" v-if="socialAuth.goo" @click="oAuth('goo')"></div>
+            <div class="col-auto cz-icon-authorize cz-auth-mail" v-if="socialAuth.mail" @click="oAuth('mail')"></div>
+            <div class="col-auto cz-icon-authorize cz-auth-ya" v-if="socialAuth.ya" @click="oAuth('ya')"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script>
+  Vue.component('comment-authorize', {
+    template: '#comment-authorize-template',
+    data: function () {
+      return {
+        loginUserShow: false,
+        loginGuestShow: false,
+        registrationShow: false,
+        recaptchaToken: '',
+        recaptchaVersion: 'v3',
+        guestAuth: {
+          name: '',
+          email: '',
+          remember: false,
+          error: {
+            name: '',
+            email: '',
+            recaptcha: '',
+          }
+        },
+        userAuth: {
+          email: '',
+          password: '',
+          remember: false,
+          error: {
+            email: '',
+            password: '',
+            recaptcha: '',
+          }
+        },
+        registration: {
+          name: '',
+          email: '',
+          password1: '',
+          password2: '',
+          avatar: '',
+          error: {
+            name: '',
+            email: '',
+            password1: '',
+            password2: '',
+            recaptcha: '',
+          }
+        },
+        socialAuth: {
+          vk: this.$root.config.vkAuthUrl,
+          ok: this.$root.config.okAuthUrl,
+          fb: this.$root.config.fbAuthUrl,
+          goo: this.$root.config.gooAuthUrl,
+          mail: this.$root.config.mailAuthUrl,
+          ya: this.$root.config.yaAuthUrl,
+        },
+        errorMessage: '',
+      }
+    },
+    created() {
+      this.recaptchaVersion = this.$root.config.recaptchaVersion;
+      this.loginUserButton();
+    },
+    methods: {
+      oAuth: function (social) {
+        var sW = (screen.width - 800) / 2;
+        var sH = (screen.height - 600) / 2;
+
+        window.open(this.socialAuth[social], 'authorize', 'width=840, height=620, top=' + sH + ', left=' + sW + '');
+      },
+      loginUserButton: function () {
+        this.loginUserShow = true;
+        this.loginGuestShow = false;
+        this.registrationShow = false;
+        this.recaptchaToken = '';
+
+        if (this.recaptchaVersion === 'v2') {
+          setTimeout(() => {
+            try {
+              grecaptcha.render("recaptchaUser", {
+                "sitekey": this.$root.config.recaptchaKeyV2,
+                'callback': (token) => {
+                  this.recaptchaVersion = 'v2';
+                  this.recaptchaToken = token;
+                  this.userAuth.error.recaptcha = '';
+                }
+              });
+            } catch (error) { grecaptcha.reset() }
+          }, 100);
+        }
+      },
+      loginGuestButton: function () {
+        this.loginUserShow = false;
+        this.loginGuestShow = true;
+        this.registrationShow = false;
+        this.recaptchaToken = '';
+
+        if (this.recaptchaVersion === 'v2') {
+          setTimeout(() => {
+            try {
+              grecaptcha.render("recaptchaGuest", {
+                "sitekey": this.$root.config.recaptchaKeyV2,
+                'callback': (token) => {
+                  this.recaptchaVersion = 'v2';
+                  this.recaptchaToken = token;
+                  this.guestAuth.error.recaptcha = '';
+                }
+              });
+            } catch (error) { grecaptcha.reset() }
+          }, 100);
+        }
+      },
+      registrationButton: function () {
+        this.loginUserShow = false;
+        this.loginGuestShow = false;
+        this.registrationShow = true;
+        this.recaptchaToken = '';
+
+        if (this.recaptchaVersion === 'v2') {
+          setTimeout(() => {
+            try {
+              grecaptcha.render("recaptchaRegistration", {
+                "sitekey": this.$root.config.recaptchaKeyV2,
+                'callback': (token) => {
+                  this.recaptchaVersion = 'v2';
+                  this.recaptchaToken = token;
+                  this.registration.error.recaptcha = '';
+                }
+              });
+            } catch (error) { grecaptcha.reset() }
+          }, 100);
+        }
+      },
+      validateName: function (name, require = false) {
+        if (require) {
+          if (name === '' || /^\s+$/g.test(name)) {
+            this.errorMessage = this.$root.language.empty_field;
+            return false;
+          }
+        }
+
+        if (name !== '') {
+          if (!/^[а-яА-ЯёЁ\w\s\-]+$/g.test(name)) {
+            this.errorMessage = this.$root.language.only_letters;
+            return false;
+          } else if (Object.values(this.$root.config.nameReserve).indexOf(name) !== -1) {
+            this.errorMessage = this.$root.language.reserved_name;
+            return false;
+          } else if (name.length < this.$root.config.minName) {
+            this.errorMessage = this.printf(this.$root.language.min_characters, this.$root.config.minName);
+            return false;
+          } else if (name.length > this.$root.config.maxName) {
+            this.errorMessage = this.printf(this.$root.language.max_characters, this.$root.config.maxName);
+            return false;
+          }
+        }
+
+        return true;
+      },
+      validateEmail: function (email, require = false) {
+        if (require) {
+          if (email === '') {
+            this.errorMessage = this.$root.language.empty_field;
+            return false;
+          }
+        }
+
+        if (email !== '' && !/^[^@]+@[^@\.]+\.[^@\.]+$/g.test(email)) {
+          this.errorMessage = this.$root.language.invalid_email;
+          return false;
+        }
+
+        return true;
+      },
+      validatePassword: function (password, require = false) {
+        if (require) {
+          if (password === '') {
+            this.errorMessage = this.$root.language.empty_field;
+            return false;
+          }
+        }
+
+        if (password !== '') {
+          if (!/^[\wа-яА-ЯёЁ%*)?@#$~]+$/g.test(password)) {
+            this.errorMessage = this.$root.language.only_letters_numbers_signs;
+            return false;
+          } else if (password.length < this.$root.config.minPass) {
+            this.errorMessage = this.printf(this.$root.language.min_characters, this.$root.config.minPass);
+            return false;
+          } else if (password.length > this.$root.config.maxPass) {
+            this.errorMessage = this.printf(this.$root.language.max_characters, this.$root.config.maxPass);
+            return false;
+          }
+        }
+
+        return true;
+      },
+      recaptchaVerify: function (fn) {
+        axios.post(this.$root.apiPath, {
+          action: 'recaptchaVerify',
+          recaptchaToken: this.recaptchaToken,
+          recaptchaVersion: this.recaptchaVersion
+        }).then(response => {
+          fn(response.data.success, response.data.error || '');
+        });
+      },
+      recaptchaValidate: function (context, fn) {
+        if (this.$root.config.recaptcha && this.$root.user.id === undefined) {
+          if (!this.recaptchaToken) {
+            if (this.recaptchaVersion === 'v3') {
+              grecaptcha.execute(this.$root.config.recaptchaKeyV3).then((token) => {
+                this.recaptchaToken = token;
+
+                this.recaptchaVerify((success, error) => {
+                  if (success) {
+                    this.recaptchaToken = '';
+                    this.recaptchaVersion = this.$root.config.recaptchaVersion;
+
+                    fn(true);
+                  } else {
+                    if (this.$root.config.recaptchaVersion === 'v3') {
+                      grecaptcha.render(context.contain, {
+                        "sitekey": this.$root.config.recaptchaKeyV2,
+                        'callback': (token) => {
+                          this.recaptchaToken = token;
+                          this.userAuth.error.recaptcha = '';
+                          this.guestAuth.error.recaptcha = '';
+                          this.registration.error.recaptcha = '';
+                        }
+                      });
+                    }
+
+                    fn(false);
+                    return false;
+                  }
+                })
+              });
+            } else {
+              try {
+                grecaptcha.render(context.contain, {
+                  "sitekey": this.$root.config.recaptchaKeyV2,
+                  'callback': (token) => {
+                    this.recaptchaToken = token;
+                    this.userAuth.error.recaptcha = '';
+                    this.guestAuth.error.recaptcha = '';
+                    this.registration.error.recaptcha = '';
+                  }
+                });
+              } catch (error) {
+                grecaptcha.reset();
+
+                fn(false);
+                return false;
+              }
+            }
+          } else {
+            this.recaptchaVersion = 'v2';
+
+            this.recaptchaVerify((success, error) => {
+              if (success) {
+                this.recaptchaToken = '';
+                this.recaptchaVersion = this.$root.config.recaptchaVersion;
+
+                fn(true);
+              } else {
+                fn(false);
+                return false;
+              }
+            });
+          }
+        } else {
+          fn(true);
+        }
+      },
+      actionUserLogin: function () {
+        if (this.userAuth.email === '') {
+          this.userAuth.error.email = this.$root.language.empty_field;
+          return false;
+        }
+
+        if (this.userAuth.password === '') {
+          this.userAuth.error.password = this.$root.language.empty_field;
+          return false;
+        }
+
+        this.recaptchaValidate({ contain: 'recaptchaUser' }, (success) => {
+          if (success) {
+            axios.post(this.$root.apiPath, {
+              action: 'userAuth',
+              email: this.userAuth.email,
+              password: this.userAuth.password,
+              remember: this.userAuth.remember
+            }).then(response => {
+              if (response.data.auth === true) {
+                this.$root.user = response.data.user;
+                this.$emit('close');
+
+                this.userAuth.email = '';
+                this.userAuth.password = '';
+                this.userAuth.remember = false;
+              } else {
+                if (response.data === 'error-data-authorize') {
+                  this.userAuth.error.email = this.$root.language.invalid_data;
+                  this.userAuth.error.password = this.$root.language.invalid_data;
+                }
+              }
+            });
+          } else {
+            this.userAuth.error.recaptcha = this.$root.language.recaptcha_confirm_bot;
+          }
+        });
+      },
+      actionGuestLogin: function () {
+        if (!this.validateName(this.guestAuth.name, true)) {
+          this.guestAuth.error.name = this.errorMessage;
+          return false;
+        }
+
+        if (!this.validateEmail(this.guestAuth.email, this.$root.config.guest_email_required ? true : false)) {
+          this.guestAuth.error.email = this.errorMessage;
+          return false;
+        }
+
+        this.recaptchaValidate({ contain: 'recaptchaGuest' }, (success) => {
+          if (success) {
+            axios.post(this.$root.apiPath, {
+              action: 'guestAuth',
+              name: this.guestAuth.name,
+              email: this.guestAuth.email,
+              remember: this.guestAuth.remember,
+            }).then(response => {
+              if (response.data.auth === true) {
+                this.$root.user = response.data.user;
+                this.$emit('close');
+
+                this.guestAuth.name = '';
+                this.guestAuth.email = '';
+                this.guestAuth.remember = false;
+
+                this.recaptchaVersion = this.$root.config.recaptchaVersion;
+                this.recaptchaToken = '';
+              }
+            });
+          } else {
+            this.guestAuth.error.recaptcha = this.$root.language.recaptcha_confirm_bot;
+          }
+        });
+      },
+      actionRegistration: function () {
+        if (!this.validateName(this.registration.name, true)) {
+          this.registration.error.name = this.errorMessage;
+          return false;
+        }
+
+        if (!this.validateEmail(this.registration.email, true)) {
+          this.registration.error.email = this.errorMessage;
+          return false;
+        }
+
+        if (!this.validatePassword(this.registration.password1, true)) {
+          this.registration.error.password1 = this.errorMessage;
+          return false;
+        }
+
+        if (this.registration.password1 !== this.registration.password2) {
+          this.registration.error.password2 = this.$root.language.different_passwords;
+          return false;
+        }
+
+        this.recaptchaValidate({ contain: 'recaptchaRegistration' }, (success) => {
+          if (success) {
+            axios.post(this.$root.apiPath, {
+              action: 'registration',
+              name: this.registration.name,
+              email: this.registration.email,
+              password1: this.registration.password1,
+              password2: this.registration.password2,
+              avatar: this.registration.avatar,
+              recaptchaToken: this.recaptchaToken,
+              recaptchaVersion: this.recaptchaVersion,
+            }).then(response => {
+              if (response.data.auth === true) {
+                this.$root.user = response.data.user;
+                this.$emit('close');
+
+                this.registration.name = '';
+                this.registration.email = '';
+                this.registration.password1 = '';
+                this.registration.password2 = '';
+                this.registration.avatar = '';
+              } else {
+                if (response.data === 'email-exists') {
+                  this.registration.error.email = this.$root.language.email_already_registered;
+                }
+              }
+            });
+          } else {
+            this.registration.error.recaptcha = this.$root.language.recaptcha_confirm_bot;
+          }
+        });
+      },
+      actionUploadAvatar: function () {
+        var data = new FormData;
+        data.append('action', 'uploadAvatar');
+        data.append('file', event.target.files[0]);
+
+        axios.post(this.$root.apiPath, data).then(response => {
+          this.registration.avatar = response.data;
+        });
+      },
+    }
+  });
+</script>
