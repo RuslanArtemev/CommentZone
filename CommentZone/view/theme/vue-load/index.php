@@ -106,7 +106,7 @@
   <div class="invalid-feedback">{{ comments[0].error.text }}</div>
 
   <div class="row my-4 border-bottom cz-comments-body-header">
-    <div class="col"><span class="row">{{ language.comments }} ({{ count.main + count.answer }})</span></div>
+    <div class="col-auto"><span class="row">{{ language.comments }} ({{ count.main + count.answer }})</span></div>
     <div class="col position-relative" v-dropdown="sortLess">
       <div class="col-auto text-end cz-sort-btn dropdown-toggle" :class="!sortLess ? 'd-none' : ''" @click="sortLessShow = sortLessShow ? false : true">{{ language.sort_by }}</div>
       <div class="row justify-content-end cz-sort-box" :class="sortBoxClass()">
