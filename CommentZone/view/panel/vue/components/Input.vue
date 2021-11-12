@@ -25,11 +25,11 @@
           </div>
         </div>
       </div>
-      <div class="col-12 my-2">
-        <div class="row">
-          <div class="col">
-            <div class="row">
-              <div class="col-auto pe-1">
+      <div class="col col-sm-12 my-2">
+        <div class="row align-items-end">
+          <div class="col-auto">
+            <div class="row row-cols-3 m-0">
+              <div class="col-sm-auto ps-0 pe-2">
                 <div>
                   <label class="icon-control-to-form" :for="'upload-images-' + id">
                     <span
@@ -48,7 +48,7 @@
                   />
                 </div>
               </div>
-              <div class="col-auto px-1">
+              <div class="col-sm-auto ps-0 pe-2">
                 <div class="icon-control-to-form" @click="addVideoModal = true">
                   <div
                     class="icon-video"
@@ -121,7 +121,7 @@
                 </div>
               </div>
 
-              <div class="col-auto px-1 dropdown emoji-block" @mouseenter="emojiBlockPosition($event)">
+              <div class="col-sm-auto ps-0 pe-2 dropdown emoji-block" @mouseenter="emojiBlockPosition($event)">
                 <div class="icon-control-to-form">
                   <div
                     class="icon-smiles"

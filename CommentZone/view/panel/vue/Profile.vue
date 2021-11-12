@@ -1,7 +1,7 @@
 <template>
   <div v-if="currentUser.id && user.id">
-    <div v-if="currentUser.permission.indexOf('manage_profile') !== -1" style="position: relative">
-      <router-link style="position: absolute; right: 0" class="btn btn-dark-blue shadow-sm btn-sm mb-4" :to="user.id + '/edit'">
+    <div v-if="currentUser.permission.indexOf('manage_profile') !== -1" class="position-relative text-end">
+      <router-link class="btn btn-dark-blue shadow-sm btn-sm mb-4 position-absolute end-0" :to="user.id + '/edit'">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
           <path
             d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
@@ -197,20 +197,20 @@
       <div v-for="(signin, index) in user.signin" :key="'sig' + index">
         <div class="mb-4" :class="user.signin.length > 1 && index > 0 && !loginsShow ? 'd-none' : ''">
           <div class="row">
-            <div class="col-3 col-md-2 text-pale fw-bold text-nowrap">{{ $store.state.language.ip }}:</div>
-            <div class="col-9 col-md-10 text-light">{{ signin.ip }}</div>
+            <div class="col-12 col-sm-3 col-md-2 text-pale fw-bold text-nowrap">{{ $store.state.language.ip }}:</div>
+            <div class="col-12 col-sm-9 col-md-10 text-light">{{ signin.ip }}</div>
           </div>
           <div class="row">
-            <div class="col-3 col-md-2 text-pale fw-bold text-nowrap">{{ $store.state.language.user_agent }}:</div>
-            <div class="col-9 col-md-10 text-light">{{ signin.agent }}</div>
+            <div class="col-12 col-sm-3 col-md-2 text-pale fw-bold text-nowrap">{{ $store.state.language.user_agent }}:</div>
+            <div class="col-12 col-sm-9 col-md-10 text-light">{{ signin.agent }}</div>
           </div>
           <div class="row">
-            <div class="col-3 col-md-2 text-pale fw-bold text-nowrap">{{ $store.state.language.session_id }}:</div>
-            <div class="col-9 col-md-10 text-light">{{ signin.session_id }}</div>
+            <div class="col-12 col-sm-3 col-md-2 text-pale fw-bold text-nowrap">{{ $store.state.language.session_id }}:</div>
+            <div class="col-12 col-sm-9 col-md-10 text-light">{{ signin.session_id }}</div>
           </div>
           <div class="row">
-            <div class="col-3 col-md-2 text-pale fw-bold text-nowrap">{{ $store.state.language.date }}:</div>
-            <div class="col-9 col-md-10 text-light" :title="signin.date_update.title">{{ signin.date_update.title }} - {{ signin.date_update.view }}</div>
+            <div class="col-12 col-sm-3 col-md-2 text-pale fw-bold text-nowrap">{{ $store.state.language.date }}:</div>
+            <div class="col-12 col-sm-9 col-md-10 text-light" :title="signin.date_update.title">{{ signin.date_update.title }} - {{ signin.date_update.view }}</div>
           </div>
         </div>
 
@@ -228,13 +228,13 @@
     <div class="text-pale fs-4 my-4 pb-2 border-bottom border-pale">{{ $store.state.language.comments }}: {{ count }}</div>
 
     <div class="row my-4">
-      <div class="col">
+      <div class="col-12 col-sm my-1">
         <div class="input-group">
           <span class="input-group-text bg-dark-blue border-pale text-pale">{{ $store.state.language.page }}</span>
           <input type="text me-1" class="form-control" @change="actionFilter()" @keyup.enter="actionFilter()" v-model="filters.page" />
         </div>
       </div>
-      <div class="col">
+      <div class="col-12 col-sm my-1">
         <div class="input-group">
           <span class="input-group-text bg-dark-blue border-pale text-pale">{{ $store.state.language.bind_id }}</span>
           <input type="text me-1" class="form-control" @change="actionFilter()" @keyup.enter="actionFilter()" v-model="filters.bindId" />
@@ -243,25 +243,25 @@
     </div>
 
     <div class="row my-4">
-      <div class="col-auto">
+      <div class="col-6 col-sm-auto">
         <div class="form-check mt-1">
           <input class="form-check-input" type="checkbox" v-model="filters.moderation" id="moderationSwitch" />
           <label class="form-check-label" for="moderationSwitch">{{ $store.state.language.on_moderation }}</label>
         </div>
       </div>
-      <div class="col-auto">
+      <div class="col-6 col-sm-auto">
         <div class="form-check mt-1">
           <input class="form-check-input" type="checkbox" v-model="filters.new" id="newSwitch" />
           <label class="form-check-label" for="newSwitch">{{ $store.state.language.new_ones }}</label>
         </div>
       </div>
-      <div class="col-auto">
+      <div class="col-6 col-sm-auto">
         <div class="form-check mt-1">
           <input class="form-check-input" type="checkbox" v-model="filters.posted" id="postedSwitch" />
           <label class="form-check-label" for="postedSwitch">{{ $store.state.language.deleted_items }}</label>
         </div>
       </div>
-      <div class="col-auto">
+      <div class="col-6 col-sm-auto">
         <div class="form-check mt-1">
           <input class="form-check-input" type="checkbox" v-model="filters.reports" id="reportsSwitch" />
           <label class="form-check-label" for="reportsSwitch">{{ $store.state.language.reports }}</label>
@@ -278,7 +278,7 @@
       <div class="col">
         <button
           type="button"
-          class="btn btn-dark-blue shadow-sm btn-sm"
+          class="btn btn-dark-blue shadow-sm btn-sm my-1"
           :disabled="checkedId.length > 0 ? false : true"
           v-if="currentUser.permission.indexOf('manage_comments') !== -1 && !filters.moderation"
           @click="readComments()"
@@ -303,7 +303,7 @@
         </button>
         <button
           type="button"
-          class="btn btn-dark-blue shadow-sm btn-sm"
+          class="btn btn-dark-blue shadow-sm btn-sm my-1"
           :disabled="checkedId.length > 0 ? false : true"
           v-if="currentUser.permission.indexOf('manage_comments') !== -1 && filters.posted"
           @click="recoverCommentsModal = true"
@@ -323,7 +323,7 @@
         </button>
         <button
           type="button"
-          class="btn btn-dark-blue shadow-sm btn-sm"
+          class="btn btn-dark-blue shadow-sm btn-sm my-1"
           :disabled="checkedId.length > 0 ? false : true"
           v-if="currentUser.permission.indexOf('manage_comments') !== -1 && !filters.posted"
           @click="deleteCommentsModal = true"
@@ -341,7 +341,7 @@
         </button>
         <button
           type="button"
-          class="btn btn-dark-blue shadow-sm btn-sm"
+          class="btn btn-dark-blue shadow-sm btn-sm my-1"
           :disabled="checkedId.length > 0 ? false : true"
           v-if="$store.state.config.delete_method === 'unposted' && currentUser.permission.indexOf('remove_comment') !== -1"
           @click="removeCommentsModal = true"

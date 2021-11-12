@@ -5,8 +5,6 @@ import routes from './routes';
 import createStore from "./store";
 import Methods from './methods';
 import Index from '../Index.vue';
-// import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-// import 'bootstrap/scss/bootstrap.scss';
 
 import Comment from "../components/Comment.vue";
 import Pagination from "../components/Pagination.vue";

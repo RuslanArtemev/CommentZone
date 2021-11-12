@@ -1,3 +1,25 @@
+$smallScreen: 575.98px;
+$fontBody: 0.9rem;
+$fontBodySmallScreen: 1rem;
+$avatarSize: 30px;
+$avatarSizeSmallScreen: 40px;
+
+$vkIconUrl: "../../img/auth/vk.jpg";
+$okIconUrl: "../../img/auth/ok.jpg";
+$fbIconUrl: "../../img/auth/fb.jpg";
+$gooIconUrl: "../../img/auth/google.jpg";
+$mailIconUrl: "../../img/auth/mail.jpg";
+$yaIconUrl: "../../img/auth/ya.jpg";
+$moreIconUrl: "../../img/auth/more.jpg";
+
+$avatarIconDefaultUrl: "../../img/avatars/default.jpg";
+
+$uploadIconUrl: "../../img/icons/image-upload.png";
+$videoIconUrl: "../../img/icons/video.png";
+$emojiIconUrl: "../../img/icons/emoji.png";
+
+$playVideoIconUrl: "../../img/icons/play_video.png";
+
 #CommentZone {
   .d-none {
     display: none;
@@ -30,13 +52,13 @@
     &:hover {
       background-color: #6c757d;
       border-color: #6c757d;
-      color: #FFF;
+      color: #fff;
     }
   }
   .cz-btn-muted {
     background-color: #728094;
     border-color: #728094;
-    color: #FFF;
+    color: #fff;
     &:hover {
       background-color: #5f6b75;
       border-color: #5f6b75;
@@ -53,11 +75,14 @@
     background-color: transparent !important;
     border: none !important;
   }
+  .cz-comments-body-header {
+    font-size: 1rem;
+  }
   .cz-avatar-block {
     padding-top: 6px;
     .cz-avatar {
-      width: 30px;
-      height: 30px;
+      width: $avatarSize;
+      height: $avatarSize;
       display: block;
       border-radius: 2px;
       &.cz-simbol {
@@ -83,7 +108,7 @@
       content: "";
       position: absolute;
       top: 4px;
-      left: -20px;
+      left: 4px;
       width: 15px;
       height: 15px;
       background: url("../../img/icons/reply.png") center / cover no-repeat;
@@ -116,25 +141,25 @@
     margin-right: 5px;
   }
   .cz-auth-vk {
-    background: url("../../img/auth/vk.jpg") center / cover no-repeat;
+    background: url($vkIconUrl) center / cover no-repeat;
   }
   .cz-auth-ok {
-    background: url("../../img/auth/ok.jpg") center / cover no-repeat;
+    background: url($okIconUrl) center / cover no-repeat;
   }
   .cz-auth-fb {
-    background: url("../../img/auth/fb.jpg") center / cover no-repeat;
+    background: url($fbIconUrl) center / cover no-repeat;
   }
   .cz-auth-goo {
-    background: url("../../img/auth/google.jpg") center / cover no-repeat;
+    background: url($gooIconUrl) center / cover no-repeat;
   }
   .cz-auth-mail {
-    background: url("../../img/auth/mail.jpg") center / cover no-repeat;
+    background: url($mailIconUrl) center / cover no-repeat;
   }
   .cz-auth-ya {
-    background: url("../../img/auth/ya.jpg") center / cover no-repeat;
+    background: url($yaIconUrl) center / cover no-repeat;
   }
   .cz-auth-more {
-    background: url("../../img/auth/more.jpg") center / cover no-repeat;
+    background: url($moreIconUrl) center / cover no-repeat;
   }
   .close {
     outline: none;
@@ -146,7 +171,7 @@
   .cz-registration-avatar {
     width: 30px;
     height: 30px;
-    background: url("../../img/avatars/default.jpg") center / cover no-repeat;
+    background: url($avatarIconDefaultUrl) center / cover no-repeat;
   }
   .cz-posted-none {
     opacity: 0.6;
@@ -176,21 +201,21 @@
   .cz-icon-image-upload {
     &::after {
       content: "";
-      background: url("../../img/icons/image-upload.png") left / cover no-repeat;
+      background: url($uploadIconUrl) left / cover no-repeat;
       opacity: 0.4;
     }
   }
   .cz-icon-video {
     &::after {
       content: "";
-      background: url("../../img/icons/video.png") left / cover no-repeat;
+      background: url($videoIconUrl) left / cover no-repeat;
       opacity: 0.4;
     }
   }
   .cz-icon-smiles {
     &::after {
       content: "";
-      background: url("../../img/icons/emoji.png") left / cover no-repeat;
+      background: url($emojiIconUrl) left / cover no-repeat;
       opacity: 0.6;
     }
   }
@@ -258,7 +283,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    background: url("../../img/icons/play_video.png") center / cover no-repeat;
+    background: url($playVideoIconUrl) center / cover no-repeat;
   }
   .answer-block {
     position: relative;
@@ -330,7 +355,8 @@
     top: 0;
     left: 0;
     background-color: #00000066;
-    font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
+      "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     z-index: 999;
     .cz-images-view-panel-control {
       position: absolute;
@@ -351,8 +377,6 @@
       }
     }
     .cz-images-view-close {
-      font-size: 34px;
-      line-height: 1.55;
       width: 60px;
       height: 60px;
       background: #101010;
@@ -371,8 +395,6 @@
     }
     .cz-images-view-btn {
       margin: 0 8%;
-      font-size: 30px;
-      line-height: 1.75;
       width: 60px;
       height: 60px;
       background: #101010;
@@ -406,5 +428,38 @@
   }
   .cz-text-view {
     word-break: break-word;
+  }
+  .cz-font-body {
+    font-size: $fontBody;
+  }
+}
+
+@media (max-width: $smallScreen) {
+  #CommentZone {
+    .cz-comments-body-header {
+      font-size: 1.04rem;
+    }
+    .cz-avatar-block {
+      .cz-avatar {
+        width: $avatarSizeSmallScreen;
+        height: $avatarSizeSmallScreen;
+      }
+    }
+    .cz-font-body {
+      font-size: $fontBodySmallScreen;
+    }
+    .cz-images-view-block {
+      .cz-images-view-btn {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media (max-width: 460px) {
+  #CommentZone {
+    .cz-parent-name {
+      display: none;
+    }
   }
 }

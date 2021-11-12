@@ -1,7 +1,7 @@
 <script type="text/x-template" id="comment-views-template">
   <div class="comment-box position-relative">
     <div v-for="(comment, key) in comments" :key="key" class="media mt-3 mb-2" v-if="comment.posted == 1 || ($root.commentsAnswer[comment.pathStr + (comment.pathStr ? '.' : '') + comment.id] && comment.countChild > 0)">
-      <div class="media-body" style="font-size: 14px;">
+      <div class="media-body cz-font-body">
 
         <div class="cz-comment-element">
           <div class="row" :class="comment.posted == 0 ? 'cz-posted-none' : ''">
@@ -11,13 +11,13 @@
                 <img v-else class="cz-avatar" :src="comment.authorAvatar && comment.authorAvatar.small && comment.authorRole !== 'guest' ? $root.config.resource + comment.authorAvatar.small : $root.config.resource + '/img/avatars/default.jpg'" alt="">
               </div>
             </div>
-            <div class="col-auto p-0">
+            <div class="col p-0">
               <div class="row">
                 <div class="col-auto cz-author-name">
                   <span>{{ comment.authorName + (comment.authorRole === 'anonim' && comment.authorDeleted === 0 ? '-' + comment.authorPuid : '') }}</span>
-                  <span v-if="comment.authorRole === 'admin' || comment.authorRole === 'moder'" class="badge bg-danger" style="font-size: 10px; padding: .1em .5em .2em;">{{ comment.authorRole }}</span>
+                  <span v-if="comment.authorRole === 'admin' || comment.authorRole === 'moder'" class="badge bg-danger" style="font-size: 10px; padding: .1em .5em .2em; vertical-align: middle;">{{ comment.authorRole }}</span>
                 </div>
-                <div v-if="parentComment" class="col-auto ps-0 ms-3 text-dim cz-parent-name position-relative">{{ parentComment.authorName + (parentComment.authorRole === 'anonim' && parentComment.authorDeleted === 0 ? '-' + parentComment.authorPuid : '') }}</div>
+                <div v-if="parentComment" class="col-auto ps-4 ms-0 text-dim cz-parent-name position-relative">{{ parentComment.authorName + (parentComment.authorRole === 'anonim' && parentComment.authorDeleted === 0 ? '-' + parentComment.authorPuid : '') }}</div>
               </div>
               
               <div class="text-dim" :title="comment.datePublished.title">{{ comment.datePublished.view }}</div>
@@ -69,9 +69,9 @@
                   </svg>
                 </div>
                 <div class="dropdown-menu cz-comment-control-menu" :class="commentControlsShow(comment.prefixId) ? 'show' : ''" style="font-size:14px;">
-                  <div v-if="($root.user.permission.indexOf('delete_comment') !== -1 && $root.user.id == comment.authorId) || $root.user.permission.indexOf('manage_comments') !== -1" class="dropdown-item px-3 py-0 pointer" @click="$root.deleteComment = {id: comment.id, type: comment.type, path: (comment.type === 'answer' ? comment.pathStr : key)}">{{ $root.language.delete }}</div>
-                  <div v-if="($root.user.permission.indexOf('update_comment') !== -1 && $root.user.id == comment.authorId && ($root.currentTime - comment.datePublished.seconds) < ($root.config.editTime * 60) && $root.config.edit) || $root.user.permission.indexOf('manage_comments') !== -1" class="dropdown-item px-3 py-0 pointer" @click="editCommentsToggle(comment.prefixId)">{{ $root.language.edit }}</div>
-                  <div class="dropdown-item px-3 py-0 pointer" @click="$root.idCommentReport = comment.id">{{ $root.language.send_report }}</div>
+                  <div v-if="($root.user.permission.indexOf('delete_comment') !== -1 && $root.user.id == comment.authorId) || $root.user.permission.indexOf('manage_comments') !== -1" class="dropdown-item px-3 py-sm-0 py-1 pointer" @click="$root.deleteComment = {id: comment.id, type: comment.type, path: (comment.type === 'answer' ? comment.pathStr : key)}">{{ $root.language.delete }}</div>
+                  <div v-if="($root.user.permission.indexOf('update_comment') !== -1 && $root.user.id == comment.authorId && ($root.currentTime - comment.datePublished.seconds) < ($root.config.editTime * 60) && $root.config.edit) || $root.user.permission.indexOf('manage_comments') !== -1" class="dropdown-item px-3 py-sm-0 py-1 pointer" @click="editCommentsToggle(comment.prefixId)">{{ $root.language.edit }}</div>
+                  <div class="dropdown-item px-3 py-sm-0 py-1 pointer" @click="$root.idCommentReport = comment.id">{{ $root.language.send_report }}</div>
                 </div>
               </div>
             </div>

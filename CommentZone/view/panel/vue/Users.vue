@@ -48,96 +48,105 @@
             <input class="form-check-input" type="checkbox" v-model="changeSelector" />
           </div>
         </div>
-        <div class="col">
-          <button
-            v-if="filters.deleted"
-            class="btn btn-dark-blue shadow-sm btn-sm"
-            type="button"
-            :disabled="checkedId.length > 0 ? false : true"
-            @click="modalToggle('recoverModal')"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-arrow-counterclockwise"
-              viewBox="0 0 16 16"
-            >
-              <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
-              <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
-            </svg>
-            {{ $store.state.language.recover }}
-          </button>
-          <button
-            v-if="!filters.deleted"
-            class="btn btn-dark-blue shadow-sm btn-sm"
-            type="button"
-            :disabled="checkedId.length > 0 ? false : true"
-            @click="modalToggle('deleteModal')"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-              <path
-                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
-              />
-            </svg>
-            {{ $store.state.language.delete }}
-          </button>
-          <button
-            v-if="filters.deleted"
-            class="btn btn-dark-blue shadow-sm btn-sm"
-            type="button"
-            :disabled="checkedId.length > 0 ? false : true"
-            @click="modalToggle('removeModal')"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash2" viewBox="0 0 16 16">
-              <path
-                d="M14 3a.702.702 0 0 1-.037.225l-1.684 10.104A2 2 0 0 1 10.305 15H5.694a2 2 0 0 1-1.973-1.671L2.037 3.225A.703.703 0 0 1 2 3c0-1.105 2.686-2 6-2s6 .895 6 2zM3.215 4.207l1.493 8.957a1 1 0 0 0 .986.836h4.612a1 1 0 0 0 .986-.836l1.493-8.957C11.69 4.689 9.954 5 8 5c-1.954 0-3.69-.311-4.785-.793z"
-              />
-            </svg>
-            {{ $store.state.language.delete_from_database }}
-          </button>
-          <span v-if="!filters.deleted || filters.banned">
+        <div class="col-10 overflow-hidden">
+          <div v-menuHorizontal class="text-nowrap d-inline-block">
             <button
-              v-if="filters.banned"
-              class="btn btn-dark-blue shadow-sm btn-sm"
+              v-if="filters.deleted"
+              class="btn btn-dark-blue shadow-sm btn-sm my-1"
               type="button"
               :disabled="checkedId.length > 0 ? false : true"
-              @click="unban()"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                <path
-                  d="M13.485 1.431a1.473 1.473 0 0 1 2.104 2.062l-7.84 9.801a1.473 1.473 0 0 1-2.12.04L.431 8.138a1.473 1.473 0 0 1 2.084-2.083l4.111 4.112 6.82-8.69a.486.486 0 0 1 .04-.045z"
-                />
-              </svg>
-              {{ $store.state.language.unlock }}
-            </button>
-            <button
-              v-if="!filters.banned"
-              class="btn btn-dark-blue shadow-sm btn-sm"
-              type="button"
-              :disabled="checkedId.length > 0 ? false : true"
-              @click="modalToggle('banModal')"
+              @click="modalToggle('recoverModal')"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
                 fill="currentColor"
-                class="bi bi-person-bounding-box"
+                class="bi bi-arrow-counterclockwise"
                 viewBox="0 0 16 16"
               >
-                <path
-                  d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zM8 2c1.3 0 2.5 0.4 3.5 1.1l-8.4 8.4c-0.7-1-1.1-2.2-1.1-3.5 0-3.3 2.7-6 6-6zM8 14c-1.3 0-2.5-0.4-3.5-1.1l8.4-8.4c0.7 1 1.1 2.2 1.1 3.5 0 3.3-2.7 6-6 6z"
-                ></path>
+                <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
+                <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
               </svg>
-              {{ $store.state.language.lock }}
+              {{ $store.state.language.recover }}
             </button>
-          </span>
+            <button
+              v-if="!filters.deleted"
+              class="btn btn-dark-blue shadow-sm btn-sm my-1"
+              type="button"
+              :disabled="checkedId.length > 0 ? false : true"
+              @click="modalToggle('deleteModal')"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                <path
+                  d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                />
+              </svg>
+              {{ $store.state.language.delete }}
+            </button>
+            <button
+              v-if="filters.deleted"
+              class="btn btn-dark-blue shadow-sm btn-sm my-1"
+              type="button"
+              :disabled="checkedId.length > 0 ? false : true"
+              @click="modalToggle('removeModal')"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash2" viewBox="0 0 16 16">
+                <path
+                  d="M14 3a.702.702 0 0 1-.037.225l-1.684 10.104A2 2 0 0 1 10.305 15H5.694a2 2 0 0 1-1.973-1.671L2.037 3.225A.703.703 0 0 1 2 3c0-1.105 2.686-2 6-2s6 .895 6 2zM3.215 4.207l1.493 8.957a1 1 0 0 0 .986.836h4.612a1 1 0 0 0 .986-.836l1.493-8.957C11.69 4.689 9.954 5 8 5c-1.954 0-3.69-.311-4.785-.793z"
+                />
+              </svg>
+              {{ $store.state.language.delete_from_database }}
+            </button>
+            <span v-if="!filters.deleted || filters.banned">
+              <button
+                v-if="filters.banned"
+                class="btn btn-dark-blue shadow-sm btn-sm my-1"
+                type="button"
+                :disabled="checkedId.length > 0 ? false : true"
+                @click="unban()"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-check-lg"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M13.485 1.431a1.473 1.473 0 0 1 2.104 2.062l-7.84 9.801a1.473 1.473 0 0 1-2.12.04L.431 8.138a1.473 1.473 0 0 1 2.084-2.083l4.111 4.112 6.82-8.69a.486.486 0 0 1 .04-.045z"
+                  />
+                </svg>
+                {{ $store.state.language.unlock }}
+              </button>
+              <button
+                v-if="!filters.banned"
+                class="btn btn-dark-blue shadow-sm btn-sm my-1"
+                type="button"
+                :disabled="checkedId.length > 0 ? false : true"
+                @click="modalToggle('banModal')"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-person-bounding-box"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zM8 2c1.3 0 2.5 0.4 3.5 1.1l-8.4 8.4c-0.7-1-1.1-2.2-1.1-3.5 0-3.3 2.7-6 6-6zM8 14c-1.3 0-2.5-0.4-3.5-1.1l8.4-8.4c0.7 1 1.1 2.2 1.1 3.5 0 3.3-2.7 6-6 6z"
+                  ></path>
+                </svg>
+                {{ $store.state.language.lock }}
+              </button>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -419,11 +428,11 @@ export default {
       banModal: false,
       removeComments: "leave",
       filters: {
-        role: localStorage.getItem("filters-role-users") === 'true' ? true : false,
-        banned: localStorage.getItem("filters-banned-users") === 'true' ? true : false,
-        deleted: localStorage.getItem("filters-deleted-users") === 'true' ? true : false,
-        email: localStorage.getItem("filters-email-users") || '',
-        ip: localStorage.getItem("filters-ip-users") || '',
+        role: localStorage.getItem("filters-role-users") === "true" ? true : false,
+        banned: localStorage.getItem("filters-banned-users") === "true" ? true : false,
+        deleted: localStorage.getItem("filters-deleted-users") === "true" ? true : false,
+        email: localStorage.getItem("filters-email-users") || "",
+        ip: localStorage.getItem("filters-ip-users") || "",
       },
     };
   },

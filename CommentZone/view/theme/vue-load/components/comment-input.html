@@ -12,17 +12,17 @@
           </div>
         </div>
       </div>
-      <div class="col-12 my-2">
-        <div class="row">
-          <div v-if="$root.user.id && $root.user.role !== 'anonim'" class="col">
-            <div class="row">
-              <div v-if="$root.config.images" class="col-auto pr-1">
+      <div class="col col-sm-12 my-2">
+        <div class="row align-items-end">
+          <div v-if="$root.user.id && $root.user.role !== 'anonim'" class="col-auto">
+            <div class="row row-cols-3 m-0">
+              <div v-if="$root.config.images" class="col-sm-auto ps-0 pe-2">
                 <div>
                   <label class="cz-icon-control-to-form cz-icon-image-upload" :for="'cz-upload-images-' + id"></label>
                   <input @change="actionUploadImages" class="d-none" type="file" name="images" accept="image/jpeg,image/png" multiple :id="'cz-upload-images-' + id">
                 </div>
               </div>
-              <div v-if="$root.config.video" class="col-auto px-1">
+              <div v-if="$root.config.video" class="col-sm-auto ps-0 pe-2">
                 <div class="cz-icon-control-to-form cz-icon-video" @click="addVideoModal = true"></div>
                 <div v-if="addVideoModal" :class="addVideoModal ? 'fade show' : ''" class="modal">
                   <div class="modal-dialog">
@@ -49,7 +49,7 @@
                   </div>
                 </div>
               </div>
-              <div v-if="$root.config.emoji" class="col-auto px-1 dropdown cz-emoji-block" @mouseenter="emojiBlockPosition($event)">
+              <div v-if="$root.config.emoji" class="col-sm-auto ps-0 pe-2 dropdown cz-emoji-block" @mouseenter="emojiBlockPosition($event)">
                 <div class="cz-icon-control-to-form cz-icon-smiles"></div>
                 <div class="dropdown-menu cz-emoji-box">
                   <comment-emoji :prefix-id="comment.prefixId + '-' + action"></comment-emoji>

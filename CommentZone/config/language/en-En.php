@@ -312,4 +312,6 @@ return array (
   'show_more' => 'Show More',
   'show_less' => 'Show Less',
   'user_agent' => 'User-Agent',
+  'sort_by' => 'Sort by',
+  'controls' => 'Controls',
 );

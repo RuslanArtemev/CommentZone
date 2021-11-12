@@ -312,4 +312,6 @@ return array (
   'show_more' => 'Показать еще',
   'show_less' => 'Скрыть',
   'user_agent' => 'User-Agent',
+  'sort_by' => 'Упорядочить',
+  'controls' => 'Управление',
 );

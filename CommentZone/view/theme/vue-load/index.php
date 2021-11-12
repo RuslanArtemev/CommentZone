@@ -19,13 +19,13 @@
 <div id="CommentZone" class="container" :class="'d-block'" style="display: none;" :style="wait ? 'cursor: wait' : ''">
   <div v-if="config.authorize" class="row my-2">
     <div class="p-0 text-end">
-      <div v-if="user.id" class="btn-group ">
+      <div v-if="user.id" class="dropdown">
         <div class="dropdown-toggle pointer" @click.stop="dropdownToggle">
           <span v-if="(!user.avatar || !user.avatar.small) && config.avatarSimbol" class="me-1 align-text-top cz-avatar-min cz-simbol" :style="'background:' + user.avatar" v-html="user.name.substring(0, 1)"></span>
           <span v-else><img class="me-1 align-text-top cz-avatar-min" :src="user.avatar && user.avatar.small ? config.resource + user.avatar.small : config.resource + '/img/avatars/default.jpg'" alt=""></span>
           <span>{{ user.name }}</span><span v-if="user.role === 'anonim'">{{ '-' + user.puid  }}</span>
         </div>
-        <div class="dropdown-menu dropdown-menu-end end-0 cz-author-name-menu" :class="dropdown ? 'show' : ''">
+        <div class="row dropdown-menu dropdown-menu-end end-0 cz-author-name-menu" :class="dropdown ? 'show' : ''">
           <div v-if="user.email !== ''" class="dropdown-item">{{ user.email }}</div>
           <div class="dropdown-item pointer" @click="logout">{{ language.exit }}</div>
         </div>
@@ -46,17 +46,17 @@
         </div>
       </div>
     </div>
-    <div class="col-12 my-2">
-      <div class="row">
-        <div class="col">
-          <div v-if="user.id && user.role !== 'anonim'" class="row">
-            <div v-if="config.images" class="col-auto pe-1">
+    <div class="col col-sm-12 my-2">
+      <div class="row align-items-end">
+        <div class="col-auto">
+          <div v-if="user.id && user.role !== 'anonim'" class="row row-cols-3 m-0">
+            <div v-if="config.images" class="col-sm-auto ps-0 pe-2">
               <div class="">
                 <label class="cz-icon-control-to-form cz-icon-image-upload" for="cz-upload-images"></label>
                 <input @change="actionUploadImages" class="d-none" type="file" name="images" accept="image/jpeg,image/png" multiple id="cz-upload-images">
               </div>
             </div>
-            <div v-if="config.video" class="col-auto px-1">
+            <div v-if="config.video" class="col-sm-auto ps-0 pe-2">
               <div class="cz-icon-control-to-form cz-icon-video" @click="addVideoModal = true"></div>
               <div :class="addVideoModal ? 'fade show' : ''" class="modal">
                 <div class="modal-dialog">
@@ -83,7 +83,7 @@
                 </div>
               </div>
             </div>
-            <div v-if="config.emoji" class="col-auto px-1 dropdown cz-emoji-block">
+            <div v-if="config.emoji" class="col-sm-auto ps-0 pe-2 dropdown cz-emoji-block">
               <div class="cz-icon-control-to-form cz-icon-smiles"></div>
               <div class="dropdown-menu cz-emoji-box">
                 <comment-emoji prefix-id="0"></comment-emoji>
@@ -105,13 +105,14 @@
   </div>
   <div class="invalid-feedback">{{ comments[0].error.text }}</div>
 
-  <div class="row my-4 border-bottom">
+  <div class="row my-4 border-bottom cz-comments-body-header">
     <div class="col"><span class="row">{{ language.comments }} ({{ count.main + count.answer }})</span></div>
-    <div class="col">
-      <div class="row justify-content-end">
-        <div class="col-auto" :class="sort === 'new' ? 'border-bottom border-primary' : 'pointer'" :style="wait ? 'cursor: wait' : ''" @click="actionSort('new')">{{ language.new_ones }}</div>
-        <div class="col-auto" :class="sort === 'old' ? 'border-bottom border-primary' : 'pointer'" :style="wait ? 'cursor: wait' : ''" @click="actionSort('old')">{{ language.old }}</div>
-        <div v-if="config.rating" class="col-auto" :class="sort === 'pop' ? 'border-bottom border-primary' : 'pointer'" :style="wait ? 'cursor: wait' : ''" @click="actionSort('pop')">{{ language.popular }}</div>
+    <div class="col position-relative" v-dropdown="sortLess">
+      <div class="col-auto text-end cz-sort-btn dropdown-toggle" :class="!sortLess ? 'd-none' : ''" @click="sortLessShow = sortLessShow ? false : true">{{ language.sort_by }}</div>
+      <div class="row justify-content-end cz-sort-box" :class="sortBoxClass()">
+        <div class="col-auto cz-sort-item" :class="sortItemClass('new')" :style="wait ? 'cursor: wait' : ''" @click="actionSort('new')">{{ language.new_ones }}</div>
+        <div class="col-auto cz-sort-item" :class="sortItemClass('old')" :style="wait ? 'cursor: wait' : ''" @click="actionSort('old')">{{ language.old }}</div>
+        <div v-if="config.rating" class="col-auto cz-sort-item" :class="sortItemClass('pop')" :style="wait ? 'cursor: wait' : ''" @click="actionSort('pop')">{{ language.popular }}</div>
       </div>
     </div>
   </div>
@@ -141,6 +142,21 @@
 <?php require_once __DIR__ . '/components/toasts.html' ?>
 
 <script>
+  Vue.directive('dropdown', {
+    inserted: function(el, binding, vnode) {
+      function resize() {
+        if (window.screen.width <= 614) {
+          vnode.context.sortLess = true;
+        } else {
+          vnode.context.sortLess = false;
+        }
+      }
+
+      resize();
+
+      window.addEventListener('resize', resize);
+    }
+  });
   Vue.directive('focus', {
     inserted: function(e) {
       e.focus();
@@ -230,14 +246,20 @@
       sentDisabled: false,
       deleteDisabled: false,
       wait: false,
+      sortLess: false,
+      sortLessShow: false,
     },
     created() {
       axios.defaults.headers.common = {
         'Cz-Csrf-Token': this.csrfToken
       };
       document.addEventListener('click', e => {
-        if (Object.values(e.target.classList).indexOf('cz-author-name-menu') === -1) {
+        var targetClass = Object.values(e.target.classList);
+        if (targetClass.indexOf('cz-author-name-menu') === -1) {
           this.dropdownClose();
+        }
+        if (targetClass.indexOf('cz-sort-btn') === -1) {
+          this.sortLessShow = false;
         }
       }, false);
       this.recaptchaVersion = this.config.recaptchaVersion;
@@ -266,6 +288,37 @@
       // });
     },
     methods: {
+      sortBoxClass() {
+        var strClass = '';
+
+        if (this.sortLess) {
+          strClass += 'dropdown-menu end-0';
+        }
+        if (this.sortLessShow) {
+          strClass += ' show';
+        }
+
+        return strClass;
+      },
+      sortItemClass(val) {
+        var strClass = '';
+
+        if (this.sortLess) {
+          strClass += 'dropdown-item';
+
+          if (this.sort === val) {
+            strClass += ' active';
+          }
+        } else {
+          if (this.sort === val) {
+            strClass += 'border-bottom border-primary';
+          } else {
+            strClass += 'pointer';
+          }
+        }
+
+        return strClass;
+      },
       clearError: function() {
         this.comments[0].error.text = '';
         this.timeout = 0;
