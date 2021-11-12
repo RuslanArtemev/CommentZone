@@ -18,7 +18,7 @@ class ApiController
   public function __construct()
   {
   }
-  
+
   /**
    * Request validate
    *
@@ -40,13 +40,18 @@ class ApiController
     $User = new User();
 
     if (!in_array($action, $methodsAllowedNoAuthorize)) {
+      if (!Helper::csrfTokenApprove()) {
+        header("HTTP/1.0 403 Csrf Protection");
+        return false;
+      }
+
       $authorize = false;
 
       $ip = $User->getIp();
       if ($User->existsBanIp($ip)) {
         return 'ban-ip';
       }
-      
+
       if (!$User->checkAuthorize()) {
         $config = App::config('common');
 
@@ -87,7 +92,7 @@ class ApiController
 
     return true;
   }
-  
+
   /**
    * Reset password
    *
@@ -130,7 +135,7 @@ class ApiController
 
     return json_encode(true);
   }
-  
+
   /**
    * Reset code verify for reset password
    *
@@ -170,7 +175,7 @@ class ApiController
 
     return json_encode(true);
   }
-  
+
   /**
    * New password
    *
@@ -241,7 +246,7 @@ class ApiController
 
     return json_encode(true);
   }
-  
+
   /**
    * Recaptcha verify
    *
@@ -255,7 +260,7 @@ class ApiController
 
     return json_encode($recaptchaVerify);
   }
-  
+
   /**
    * Oauth login
    *
@@ -316,7 +321,7 @@ class ApiController
       'user' => $_SESSION['cz_user'],
     ));
   }
-  
+
   /**
    * oAuth registration
    *
@@ -411,7 +416,7 @@ class ApiController
       'user' => $_SESSION['cz_user'],
     ));
   }
-  
+
   /**
    * Get pages
    *
@@ -433,7 +438,7 @@ class ApiController
 
     return json_encode($pages);
   }
-  
+
   /**
    * Get page
    *
@@ -447,7 +452,7 @@ class ApiController
 
     return json_encode($page);
   }
-  
+
   /**
    * Set page
    *
@@ -465,7 +470,7 @@ class ApiController
 
     return json_encode($page);
   }
-  
+
   /**
    * Get pages count
    *
@@ -485,7 +490,7 @@ class ApiController
 
     return json_encode($pagesCount);
   }
-  
+
   /**
    * Delete pages
    *
@@ -503,7 +508,7 @@ class ApiController
 
     return json_encode($delete);
   }
-  
+
   /**
    * Move comments
    *
@@ -529,7 +534,7 @@ class ApiController
 
     return json_encode($update);
   }
-  
+
   /**
    * Recount comments
    *
@@ -547,7 +552,7 @@ class ApiController
 
     return json_encode($recount);
   }
-  
+
   /**
    * Delete spam
    *
@@ -565,7 +570,7 @@ class ApiController
 
     return json_encode($delete);
   }
-  
+
   /**
    * Set spam
    *
@@ -588,7 +593,7 @@ class ApiController
 
     return json_encode($spam);
   }
-  
+
   /**
    * Get count spam
    *
@@ -605,7 +610,7 @@ class ApiController
 
     return json_encode($count);
   }
-  
+
   /**
    * Get spam
    *
@@ -623,7 +628,7 @@ class ApiController
 
     return json_encode($spam);
   }
-  
+
   /**
    * Get count ban IP
    *
@@ -641,7 +646,7 @@ class ApiController
 
     return json_encode($count);
   }
-  
+
   /**
    * Get ban IP
    *
@@ -663,7 +668,7 @@ class ApiController
 
     return json_encode($ip);
   }
-  
+
   /**
    * Set ban IP
    *
@@ -701,7 +706,7 @@ class ApiController
 
     return json_encode($banIp);
   }
-  
+
   /**
    * Unban IP
    *
@@ -719,7 +724,7 @@ class ApiController
 
     return json_encode($unban);
   }
-  
+
   /**
    * Set rating
    *
@@ -741,7 +746,7 @@ class ApiController
       'result' => $rating
     ));
   }
- 
+
   /**
    * Send report
    *
@@ -755,7 +760,7 @@ class ApiController
 
     return json_encode($compaint);
   }
- 
+
   /**
    * Get reports
    *
@@ -778,7 +783,7 @@ class ApiController
 
     return json_encode($reports);
   }
-  
+
   /**
    * Read report
    *
@@ -797,7 +802,7 @@ class ApiController
 
     return json_encode($read);
   }
-  
+
   /**
    * Read all report
    *
@@ -835,7 +840,7 @@ class ApiController
 
     return json_encode($count);
   }
-  
+
   /**
    * Delete report by ID
    *
@@ -854,7 +859,7 @@ class ApiController
 
     return json_encode($reports);
   }
-  
+
   /**
    * Delete reports by comment id (cid)
    *
@@ -873,7 +878,7 @@ class ApiController
 
     return json_encode($reports);
   }
- 
+
   /**
    * Get comments for pages
    *
@@ -888,7 +893,7 @@ class ApiController
 
     return json_encode($comments);
   }
- 
+
   /**
    * Get comment by ID
    *
@@ -903,7 +908,7 @@ class ApiController
 
     return json_encode($comment);
   }
- 
+
   /**
    * Get comments for panel
    *
@@ -984,7 +989,7 @@ class ApiController
 
     return json_encode($comments);
   }
- 
+
   /**
    * Get count comments
    *
@@ -1014,7 +1019,7 @@ class ApiController
 
     return json_encode($count);
   }
- 
+
   /**
    * Get roles for panel
    *
@@ -1032,7 +1037,7 @@ class ApiController
 
     return json_encode($roles);
   }
- 
+
   /**
    * Update roles
    *
@@ -1069,7 +1074,7 @@ class ApiController
 
     return json_encode($permissions);
   }
- 
+
   /**
    * Update permissions
    *
@@ -1121,7 +1126,7 @@ class ApiController
       'languages' => $languages,
     ));
   }
- 
+
   /**
    * Update Languages
    *
@@ -1183,7 +1188,7 @@ class ApiController
 
     return json_encode($count);
   }
-  
+
   /**
    * Get count comments for panel
    *
@@ -1204,7 +1209,7 @@ class ApiController
 
     return json_encode($count);
   }
- 
+
   /**
    * Get count comments for panel by user ID
    *
@@ -1250,7 +1255,7 @@ class ApiController
 
     return json_encode($count);
   }
-  
+
   /**
    * Get profile for panel
    *
@@ -1293,7 +1298,7 @@ class ApiController
 
     return json_encode($users);
   }
- 
+
   /**
    * Delete selected users
    *
@@ -1332,7 +1337,7 @@ class ApiController
 
     return json_encode($delete);
   }
-  
+
   /**
    * Remove selected users from DB
    *
@@ -1367,7 +1372,7 @@ class ApiController
 
     return json_encode($delete);
   }
- 
+
   /**
    * Recover selected users
    *
@@ -1385,7 +1390,7 @@ class ApiController
     $recover = $User->recover($post->listId);
     return json_encode($recover);
   }
- 
+
   /**
    * Ban users
    *
@@ -1478,7 +1483,7 @@ class ApiController
 
     return json_encode($usersUpdate);
   }
-  
+
   /**
    * Get setting for panel
    *
@@ -1535,7 +1540,7 @@ class ApiController
 
     return json_encode(!$result ? false : true);
   }
- 
+
   /**
    * Get config
    *
@@ -1564,7 +1569,7 @@ class ApiController
       'language' => $language,
     ));
   }
-  
+
   /**
    * Get current user
    *
@@ -1579,7 +1584,7 @@ class ApiController
       return 'no_authorize';
     }
   }
-  
+
   /**
    * Set profile
    *
@@ -1624,7 +1629,7 @@ class ApiController
 
     return json_encode($update);
   }
- 
+
   /**
    * Get stop words
    *
@@ -1642,7 +1647,7 @@ class ApiController
 
     return json_encode($words);
   }
-  
+
   /**
    * Set Stop-Words
    *
@@ -1660,7 +1665,7 @@ class ApiController
 
     return json_encode($insertId);
   }
-  
+
   /**
    * Delete Stop-Words
    *
@@ -1944,7 +1949,7 @@ class ApiController
 
     return json_encode($response);
   }
- 
+
   /**
    * Uodate comment
    *
@@ -2137,7 +2142,7 @@ class ApiController
 
     return json_encode($approve);
   }
-  
+
   /**
    * Read comment
    *
@@ -2155,7 +2160,7 @@ class ApiController
 
     return json_encode($approve);
   }
- 
+
   /**
    * Delete selected comments
    *
@@ -2189,7 +2194,7 @@ class ApiController
       'success' => $delete
     ));
   }
- 
+
   /**
    * Remove comment complete
    *
@@ -2216,7 +2221,7 @@ class ApiController
       'success' => $delete,
     ));
   }
- 
+
   /**
    * Read selected comments
    *
@@ -2261,7 +2266,7 @@ class ApiController
       'success' => $recover,
     ));
   }
- 
+
   /**
    * Delete comment
    *
@@ -2311,7 +2316,7 @@ class ApiController
       $type => $delete_method === 'unposted' ? $currentComment : array(),
     ));
   }
- 
+
   /**
    * Remove comment complete
    *
@@ -2350,7 +2355,7 @@ class ApiController
       $type => array(),
     ));
   }
- 
+
   /**
    * Recover comment
    *
@@ -2450,7 +2455,7 @@ class ApiController
 
     return json_encode($result);
   }
-  
+
   /**
    * Admin auth
    *
@@ -2635,7 +2640,7 @@ class ApiController
 
     return json_encode($images);
   }
- 
+
   /**
    * Upload images for comment
    *
@@ -2684,7 +2689,7 @@ class ApiController
 
     return json_encode($filesPath);
   }
-  
+
   /**
    * Delete images
    *
@@ -2714,7 +2719,7 @@ class ApiController
 
     return json_encode($delete);
   }
-  
+
   /**
    * Add video
    *
@@ -2805,7 +2810,7 @@ class ApiController
 
     return json_encode(true);
   }
- 
+
   /**
    * Get comments
    *
@@ -2823,7 +2828,7 @@ class ApiController
 
     require dirname(__DIR__) . '/index.php';
   }
-  
+
   /**
    * Get admin panel
    *

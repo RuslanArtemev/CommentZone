@@ -5,7 +5,7 @@ namespace app;
 use model\User;
 
 class Helper
-{    
+{
   /**
    * Generate CSRF token
    *
@@ -13,14 +13,38 @@ class Helper
    */
   public static function csrfTokenGen($tag = '')
   {
-    $User = new User();
-    $salt = self::strGen(32);
+    $token = self::strGen(32);
 
     return array(
-      'token' => ($tag !== '' ? $tag . '.' : '') . hash('sha256', $_SERVER['HTTP_USER_AGENT'] . $User->getIp() . $salt),
-      'salt' => $salt,
+      'token' => ($tag !== '' ? $tag . '.' : '') . $token,
       'time' => time(),
     );
+  }
+
+  /**
+   * Check CSRF token
+   *
+   * @return array
+   */
+  public static function csrfTokenApprove()
+  {
+    if (!isset($_SERVER['HTTP_CZ_CSRF_TOKEN'])) {
+      return false;
+    }
+
+    Session::start();
+
+    $User = new User();
+
+    $tag = explode('.', $_SERVER['HTTP_CZ_CSRF_TOKEN']);
+    $tag = $tag[0];
+    $csrfTokenView = $_SESSION['Cz-Csrf'][$tag]['token'];
+
+    if ($_SERVER['HTTP_CZ_CSRF_TOKEN'] !== $csrfTokenView) {
+      return false;
+    } else {
+      return true;
+    }
   }
   /**
    * Generate string
@@ -39,7 +63,7 @@ class Helper
 
     return $res;
   }
- 
+
   /**
    * Generate number
    *
@@ -56,7 +80,7 @@ class Helper
 
     return $res;
   }
- 
+
   /**
    * Split url into parameters
    *
@@ -88,7 +112,7 @@ class Helper
 
     return $suffix[$suffix_key];
   }
-  
+
   /**
    * Format date
    *
@@ -137,7 +161,7 @@ class Helper
 
     return $result;
   }
- 
+
   /**
    * Format time
    *
@@ -186,7 +210,7 @@ class Helper
 
     return $echoTime;
   }
-  
+
   /**
    * @param  string $str
    * @return string
@@ -195,7 +219,7 @@ class Helper
   {
     return password_hash($str, PASSWORD_BCRYPT);
   }
-  
+
   /**
    * @param  string $str
    * @param  string $salt
@@ -205,7 +229,7 @@ class Helper
   {
     return crypt(sha1($str . '/' . $salt), $salt);
   }
-  
+
   /**
    * @param  string $inputPassword
    * @param  string $cryptPassword
@@ -216,7 +240,7 @@ class Helper
   {
     return hash_equals(self::passwordCrypt($inputPassword, $salt), $cryptPassword);
   }
-  
+
   /**
    * @return string
    */
@@ -224,7 +248,7 @@ class Helper
   {
     return isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === 'on' ? 'https' : 'http';
   }
-  
+
   /**
    * @return string
    */
@@ -232,7 +256,7 @@ class Helper
   {
     return self::getProtocol() . '://' . $_SERVER['HTTP_HOST'];
   }
-  
+
   /**
    * @param  string $version
    * @param  string $token

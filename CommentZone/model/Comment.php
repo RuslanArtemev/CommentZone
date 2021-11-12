@@ -55,7 +55,7 @@ class Comment extends Model
 
     $data = $page->first();
 
-    return $data->success ? $data->result['id'] : 0;
+    return $data->success && !empty($data->result) ? $data->result['id'] : 0;
   }
 
   /**

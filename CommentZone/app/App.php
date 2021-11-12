@@ -35,7 +35,7 @@ class App
   public function install()
   {
     if (!defined('COMMENTZONE')) {
-      header("HTTP/1.1 404 Not Found");
+      header("HTTP/1.1 403 Forbidden");
       return false;
     }
 
@@ -53,7 +53,6 @@ class App
   public function connectComments($url, $bindId)
   {
     if (!defined('COMMENTZONE')) {
-      header("HTTP/1.1 404 Not Found");
       return false;
     }
 
@@ -75,7 +74,7 @@ class App
   public function connectPanel()
   {
     if (!defined('COMMENTZONE')) {
-      header("HTTP/1.1 404 Not Found");
+      header("HTTP/1.1 403 Forbidden");
       return false;
     }
 
@@ -99,7 +98,7 @@ class App
   public function connectApi()
   {
     if (!defined('COMMENTZONE') || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-      header("HTTP/1.0 404 Not Found");
+      header("HTTP/1.0 403 Forbidden");
       return false;
     }
 
@@ -117,24 +116,6 @@ class App
       return $requestValidate;
     }
 
-    Session::start();
-
-    $User = new User();
-
-    if (!isset($_SERVER['HTTP_CZ_CSRF_TOKEN'])) {
-      header("HTTP/1.0 404 Not Found");
-      return false;
-    }
-
-    $tag = explode('.', $_SERVER['HTTP_CZ_CSRF_TOKEN']);
-    $tag = $tag[0];
-    $csrfTokenView = $tag . '.' . hash('sha256', $_SERVER['HTTP_USER_AGENT'] . $User->getIp() . $_SESSION['Cz-Csrf'][$tag]['salt']);
-
-    if ($_SERVER['HTTP_CZ_CSRF_TOKEN'] !== $csrfTokenView) {
-      header("HTTP/1.0 404 Not Found");
-      return false;
-    }
-
     if (method_exists($ApiController, $post->action)) {
       $method = $post->action;
       return $ApiController->$method($post);
@@ -147,7 +128,7 @@ class App
   public function countComments()
   {
     if (!defined('COMMENTZONE') || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-      header("HTTP/1.0 404 Not Found");
+      header("HTTP/1.0 403 Forbidden");
       return false;
     }
 
@@ -166,7 +147,7 @@ class App
   public function connectByAjax()
   {
     if (!defined('COMMENTZONE') || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-      header("HTTP/1.0 404 Not Found");
+      header("HTTP/1.0 403 Forbidden");
       return false;
     }
 
@@ -190,7 +171,7 @@ class App
   public function connectOAuth()
   {
     if (!defined('COMMENTZONE')) {
-      header("HTTP/1.1 404 Not Found");
+      header("HTTP/1.1 403 Forbidden");
     }
 
     if (isset($_REQUEST['provider'])) {
