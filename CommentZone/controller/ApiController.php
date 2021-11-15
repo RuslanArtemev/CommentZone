@@ -1627,6 +1627,21 @@ class ApiController
       $User->updateRegistration($post->uid, $authSet);
     }
 
+    if ($update && !empty($post->prevAvatar)) {
+      $App = new App();
+      $Image = new Image();
+
+      $resource = $App->config('common', 'resource');
+
+      $delete = $Image->deleteImage($_SERVER['DOCUMENT_ROOT'] . '/' . $resource . '/' . $post->prevAvatar->long);
+      if ($delete) {
+        $delete = $Image->deleteImage($_SERVER['DOCUMENT_ROOT'] . '/' . $resource . '/' . $post->prevAvatar->middle);
+        if ($delete) {
+          $delete = $Image->deleteImage($_SERVER['DOCUMENT_ROOT'] . '/' . $resource . '/' . $post->prevAvatar->small);
+        }
+      }
+    }
+
     return json_encode($update);
   }
 
@@ -1697,13 +1712,14 @@ class ApiController
     }
 
     $post->text = trim($post->text);
+    $text = isset($post->text) ? $post->text : "";
     $attach = isset($post->attach) ? $post->attach : null;
 
-    if (empty($post->text) && empty($attach)) {
+    if (empty($text) && empty($attach)) {
       return 'empty-text';
     }
 
-    if (mb_strlen($post->text) > App::config('common', 'text_length')) {
+    if (mb_strlen($text) > App::config('common', 'text_length')) {
       return 'limit-text';
     }
 
@@ -1711,13 +1727,13 @@ class ApiController
     $Comment = new Comment();
 
     if (!in_array('admin_panel_access', $this->currentUser['permission'])) {
-      $stopStr = $Comment->checkStopWords($post->text);
+      $stopStr = $Comment->checkStopWords($text);
 
       if ($stopStr) {
         return json_encode($stopStr);
       }
 
-      $spam = $Comment->checkSpam($post->text, $this->currentUser['id']);
+      $spam = $Comment->checkSpam($text, $this->currentUser['id']);
 
       if ($spam) {
         return json_encode(array(
@@ -1754,10 +1770,9 @@ class ApiController
         }
       }
 
-      $post->text = trim($post->text);
       $attach = array_values($attach);
 
-      if (empty($post->text) && empty($attach)) {
+      if (empty($text) && empty($attach)) {
         return json_encode(array(
           'status' => 'error-upload-images',
         ));
@@ -1767,7 +1782,7 @@ class ApiController
     $id = $Comment->writeMain(array(
       'url' => $post->url,
       'bindId' => (int)$post->bindId,
-      'text' => $post->text,
+      'text' => $text,
       'attach' => !empty($attach) ? json_encode($attach) : null,
       'type' => 'main',
       'uid' => (int)$this->currentUser['id'],
@@ -1778,7 +1793,7 @@ class ApiController
 
     $main = array();
     if ($id) {
-      $main = $Comment->getViewById($id, 'main');
+      $main = $Comment->getViewById($id);
     }
 
     $User = new User();
@@ -1824,27 +1839,27 @@ class ApiController
       return 'permission';
     }
 
-    $post->text = trim($post->text);
+    $text = isset($post->text) ? trim($post->text) : "";
     $attach = isset($post->attach) ? $post->attach : null;
 
-    if (empty($post->text) && empty($attach)) {
+    if (empty($text) && empty($attach)) {
       return 'empty-text';
     }
 
-    if (mb_strlen($post->text) > App::config('common', 'text_length')) {
+    if (mb_strlen($text) > App::config('common', 'text_length')) {
       return 'limit-text';
     }
 
     $Comment = new Comment();
 
     if (!in_array('admin_panel_access', $this->currentUser['permission'])) {
-      $stopStr = $Comment->checkStopWords($post->text);
+      $stopStr = $Comment->checkStopWords($text);
 
       if ($stopStr) {
         return json_encode($stopStr);
       }
 
-      $spam = $Comment->checkSpam($post->text, $this->currentUser['id']);
+      $spam = $Comment->checkSpam($text, $this->currentUser['id']);
 
       if ($spam) {
         return json_encode(array(
@@ -1879,10 +1894,9 @@ class ApiController
         }
       }
 
-      $post->text = trim($post->text);
       $attach = array_values($attach);
 
-      if (empty($post->text) && empty($attach)) {
+      if (empty($text) && empty($attach)) {
         return json_encode(array(
           'status' => 'error-upload-images',
         ));
@@ -1898,7 +1912,7 @@ class ApiController
       ),
       'url' => $post->url,
       'bindId' => (int)$post->bindId,
-      'text' => $post->text,
+      'text' => $text,
       'type' => 'answer',
       'uid' => (int)$this->currentUser['id'],
       'title' => $post->title,
@@ -1909,7 +1923,7 @@ class ApiController
 
     $answer = array();
     if ($id) {
-      $answer = $Comment->getViewById($id, 'answer');
+      $answer = $Comment->getViewById($id);
     }
 
     $User = new User();
@@ -1960,7 +1974,7 @@ class ApiController
   {
     $config = App::config('common');
     $Comment = new Comment();
-    $currentComment = $Comment->getById($post->id, $post->type);
+    $currentComment = $Comment->getById($post->id);
 
     $attach = isset($post->attach) ? $post->attach : null;
 
@@ -1972,20 +1986,20 @@ class ApiController
       return 'time-expired';
     }
 
-    $post->text = trim($post->text);
+    $text = isset($post->text) ? trim($post->text) : "";
 
-    if (empty($post->text) && empty($attach)) {
+    if (empty($text) && empty($attach)) {
       return 'empty-text';
     }
 
     if (!in_array('admin_panel_access', $this->currentUser['permission'])) {
-      $stopStr = $Comment->checkStopWords($post->text);
+      $stopStr = $Comment->checkStopWords($text);
 
       if ($stopStr) {
         return json_encode($stopStr);
       }
 
-      $spam = $Comment->checkSpam($post->text, $this->currentUser['id']);
+      $spam = $Comment->checkSpam($text, $this->currentUser['id']);
 
       if ($spam) {
         return json_encode(array(
@@ -2014,10 +2028,9 @@ class ApiController
         }
       }
 
-      $post->text = trim($post->text);
       $attach = array_values($attach);
 
-      if (empty($post->text) && empty($attach)) {
+      if (empty($text) && empty($attach)) {
         return json_encode(array(
           'status' => 'error-upload-images',
         ));
@@ -2028,7 +2041,7 @@ class ApiController
       'id' => $post->id,
       'url' => $post->url,
       'bindId' => (int)$post->bindId,
-      'text' => $post->text,
+      'text' => $text,
       'type' => $post->type,
       'title' => $post->title,
       'attach' => !empty($attach) ? json_encode($attach) : null,
@@ -2048,7 +2061,7 @@ class ApiController
         $response['status'] = 'moderation';
       } else {
         if ($config['notifyUsers'] || $config['notifyAdmin']) {
-          $updatedComment = $Comment->getById($post->id, $post->type);
+          $updatedComment = $Comment->getViewById($post->id);
 
           $link = Helper::getHost() . $post->url . '#' . $post->id;
           $language = App::config('language/' . $config['language']);
@@ -2073,8 +2086,8 @@ class ApiController
         }
 
         $response['status'] = 'success';
-        $response['textOrigin'] = $post->text;
-        $response['text'] = $Comment->filter($post->text);
+        $response['textOrigin'] = $text;
+        $response['text'] = $Comment->filter($text);
         $response['attach'] = $attach;
       }
     }
@@ -2102,7 +2115,7 @@ class ApiController
     if ($config['notifyUsers'] || $config['notifyAdmin']) {
       $User = new User();
       $SendMail = new SendMail();
-      $approvedComment = $Comment->getById($post->id, $post->type);
+      $approvedComment = $Comment->getViewById($post->id);
       $commentUser = $User->getInfo((int) $approvedComment['uid']);
 
       $link = Helper::getHost() . $post->url . '#' . $post->id;
@@ -2280,7 +2293,7 @@ class ApiController
 
     $Comment = new Comment();
 
-    $currentComment = $Comment->getById($id, $type);
+    $currentComment = $Comment->getById($id);
 
     if (!$currentComment) {
       return 'not_exists';
@@ -2294,7 +2307,7 @@ class ApiController
 
     if ($delete_method === 'unposted') {
       $delete = $Comment->unposted($id, $type);
-      $currentComment = $Comment->getViewById($id, $type);
+      $currentComment = $Comment->getViewById($id);
     }
     if ($delete_method === 'delete') {
       $delete = $Comment->delete($id, $type);
@@ -2330,7 +2343,7 @@ class ApiController
 
     $Comment = new Comment();
 
-    $currentComment = $Comment->getById($id, $type);
+    $currentComment = $Comment->getById($id);
 
     if (!$currentComment) {
       return 'not_exists';
@@ -2369,7 +2382,7 @@ class ApiController
 
     $Comment = new Comment();
 
-    $currentComment = $Comment->getById($id, $type);
+    $currentComment = $Comment->getById($id);
 
     if (!$currentComment) {
       return 'not_exists';
@@ -2380,17 +2393,17 @@ class ApiController
     }
 
     $recover = $Comment->posted($id, $type);
-    $currentComment = $Comment->getViewById($id, $type);
+    $currentComment = $Comment->getViewById($id);
 
     if (!$recover) {
       return 'error_recover';
     }
 
-    $count = $Comment->getCount($post->url, $post->bindId);
+    // $count = $Comment->getCount($post->url, $post->bindId);
 
     return json_encode(array(
       'recover' => $recover,
-      'count' => $count,
+      // 'count' => $count,
       $type => $currentComment,
     ));
   }

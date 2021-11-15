@@ -155,7 +155,7 @@ class Image
     $pathStr = implode('/', $this->path);
 
     if (!file_exists($pathStr)) {
-      mkdir($pathStr, 755, true);
+      mkdir($pathStr, 0755, true);
     }
 
     return $this;
@@ -183,6 +183,7 @@ class Image
   {
     if (file_exists($path)) {
       if (unlink($path)) {
+        @rmdir(dirname($path));
         return true;
       } else return false;
     } else return true;

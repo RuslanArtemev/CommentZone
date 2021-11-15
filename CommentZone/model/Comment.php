@@ -4,9 +4,10 @@ namespace model;
 
 use app\App;
 use app\Helper;
+use app\Image;
 
 class Comment extends Model
-{ 
+{
   /**
    * Write page
    *
@@ -32,7 +33,7 @@ class Comment extends Model
 
     return $pageId->success ? $pageId->result : 0;
   }
- 
+
   /**
    * Get page id
    *
@@ -73,7 +74,7 @@ class Comment extends Model
 
     return $page->success ? $page->result['page_id'] : 0;
   }
- 
+
   /**
    * Write main comment
    *
@@ -178,7 +179,7 @@ class Comment extends Model
 
     return $insertId->success ? $insertId->result : 0;
   }
- 
+
   /**
    * Uodate comment
    *
@@ -236,7 +237,7 @@ class Comment extends Model
 
     return true;
   }
- 
+
   /**
    * Read comment
    *
@@ -255,7 +256,7 @@ class Comment extends Model
 
     return true;
   }
- 
+
   /**
    * Read selected comments by IDs
    *
@@ -273,7 +274,7 @@ class Comment extends Model
 
     return true;
   }
-  
+
   /**
    * Get comment by IP or UID
    *
@@ -304,7 +305,7 @@ class Comment extends Model
 
     return $comment->success ? $comment->result : array();
   }
- 
+
   /**
    * Get comment by UID
    *
@@ -329,7 +330,7 @@ class Comment extends Model
 
     return $comment->success ? $comment->result : array();
   }
- 
+
   /**
    * Get comment by ID
    *
@@ -337,7 +338,7 @@ class Comment extends Model
    * @param  string $type
    * @return mixed array or null
    */
-  public function getById($id, $type)
+  public function getById($id)
   {
     $comment = DB::table($this->prefix . 'comments')
       ->select()
@@ -346,7 +347,7 @@ class Comment extends Model
 
     return $comment->success && !empty($comment->result) ? $comment->result : null;
   }
- 
+
   /**
    * Get view comment by ID
    *
@@ -444,7 +445,7 @@ class Comment extends Model
       ),
     );
   }
-  
+
   /**
    * Get view comment by page
    *
@@ -667,7 +668,7 @@ class Comment extends Model
 
     return $data;
   }
-  
+
   /**
    * Get all comments for panel
    *
@@ -823,7 +824,7 @@ class Comment extends Model
 
     return $data;
   }
-  
+
   /**
    * Get count child comments
    *
@@ -844,7 +845,7 @@ class Comment extends Model
 
     return $count;
   }
- 
+
   /**
    * Get count comments list
    *
@@ -883,7 +884,7 @@ class Comment extends Model
 
     return $count;
   }
-  
+
   /**
    * Get count comments
    *
@@ -975,7 +976,7 @@ class Comment extends Model
 
     return $data->success ? $data->result : 0;
   }
- 
+
   /**
    * Comment posted
    *
@@ -1008,7 +1009,7 @@ class Comment extends Model
 
     return $update->success && $update->result->affected_rows > 0 ? true : false;
   }
- 
+
   /**
    * Comment selected posted
    *
@@ -1097,7 +1098,7 @@ class Comment extends Model
 
     return $update->success && $update->result->affected_rows > 0 ? true : false;
   }
- 
+
   /**
    * Comment unposted
    *
@@ -1137,7 +1138,7 @@ class Comment extends Model
 
     return $update->success && $update->result->affected_rows > 0 ? true : false;
   }
- 
+
   /**
    * Delete comment selected
    *
@@ -1220,7 +1221,38 @@ class Comment extends Model
 
     return true;
   }
- 
+
+
+  /**
+   * Delete comment attach
+   *
+   * @param  mixed $attach
+   * @return void
+   */
+  public function deleteAttach($attach)
+  {
+    if (isset($attach) && !empty($attach)) {
+      foreach ($attach as $value) {
+        if ($value->type === 'image') {
+          $App = new App();
+          $Image = new Image();
+
+          $resource = $App->config('common', 'resource');
+
+          if (isset($value->long)) {
+            $Image->deleteImage($_SERVER['DOCUMENT_ROOT'] . '/' . $resource . '/' . $value->long);
+          }
+          if (isset($value->middle)) {
+            $Image->deleteImage($_SERVER['DOCUMENT_ROOT'] . '/' . $resource . '/' . $value->middle);
+          }
+          if (isset($value->small)) {
+            $Image->deleteImage($_SERVER['DOCUMENT_ROOT'] . '/' . $resource . '/' . $value->small);
+          }
+        }
+      }
+    }
+  }
+
   /**
    * Delete comment
    *
@@ -1236,7 +1268,8 @@ class Comment extends Model
 
     $error = false;
 
-    #Delete all childrens to a comment
+    ### Delete all childrens to a comment ###
+
     if ($type === 'main') {
       $countDeleteing = DB::table($this->prefix . 'comments')
         ->where('mid', (int) $id)
@@ -1244,20 +1277,60 @@ class Comment extends Model
         ->whereAnd('posted', 1)
         ->count();
 
+      #Select attach for delete images
+      $commentsAttach = DB::table($this->prefix . 'comments')
+        ->select('attach')
+        ->where('mid', (int) $id)
+        ->get();
+
+      $attachListArr = array();
+
+      if ($commentsAttach->success && !empty($commentsAttach->result)) {
+        foreach ($commentsAttach->result as $value) {
+          if (!empty($value['attach'])) {
+            $attachListArr = array_merge($attachListArr, json_decode($value['attach']));
+          }
+        }
+      }
+
+      #Delete comments
       $delete = DB::table($this->prefix . 'comments')
         ->where('mid', (int) $id)
         ->delete();
 
       if ($delete->success && $delete->result->affected_rows > 0) {
+        #Add count deleted comments
         $countDeleteAnswer += $countDeleteing->success ? $countDeleteing->result : 0;
+
+        #Delete images
+        if (isset($attachListArr) && !empty($attachListArr)) {
+          $this->deleteAttach($attachListArr);
+        }
       }
 
-      #Delete parrent comment
+      ### Delete parrent comment ###
+
       $countDeleteing = DB::table($this->prefix . 'comments')
         ->where('id', (int) $id)
         ->whereAnd('moderation', 0)
         ->whereAnd('posted', 1)
         ->count();
+
+      #Select attach for delete images
+      $commentsAttach = DB::table($this->prefix . 'comments')
+        ->select('attach')
+        ->where('id', (int) $id)
+        ->get();
+
+      $attachListArr = array();
+
+      if ($commentsAttach->success && !empty($commentsAttach->result)) {
+        foreach ($commentsAttach->result as $value) {
+          if (!empty($value['attach'])) {
+            $attachListArr = json_decode($value['attach']);
+          }
+        }
+      }
 
       $delete = DB::table($this->prefix . 'comments')
         ->where('id', (int) $id)
@@ -1265,16 +1338,22 @@ class Comment extends Model
         ->delete();
 
       if ($delete->success && $delete->result->affected_rows > 0) {
+        #Add count deleted comments
         $countDeleteMain += $countDeleteing->success ? $countDeleteing->result : 0;
+
+        #Delete images
+        if (isset($attachListArr) && !empty($attachListArr)) {
+          $this->deleteAttach($attachListArr);
+        }
       } else {
         $error = true;
       }
     }
 
-    #Delete child answers to a comment
+    ###Delete child answers to a comment
     if ($type === 'answer') {
       $answer = DB::table($this->prefix . 'comments')
-        ->select('path')
+        ->select('path', 'attach')
         ->where('id', (int) $id)
         ->first();
 
@@ -1287,15 +1366,19 @@ class Comment extends Model
       $answerPath = implode('+', $answerPath);
 
       $comments = DB::table($this->prefix . 'comments')
-        ->select('id')
+        ->select('id', 'attach')
         ->where("MATCH(path) AGAINST('\"+$answerPath\"' IN BOOLEAN MODE)")
         ->get();
 
       $idListArr = array($id);
+      $attachListArr = !empty($answer->result['attach']) ? json_decode($answer->result['attach']) : array();
 
       if ($comments->success && !empty($comments->result)) {
         foreach ($comments->result as $value) {
           $idListArr[] = $value['id'];
+          if (!empty($value['attach'])) {
+            $attachListArr = array_merge($attachListArr, json_decode($value['attach']));
+          }
         }
       }
 
@@ -1310,7 +1393,13 @@ class Comment extends Model
         ->delete();
 
       if ($delete->success && $delete->result->affected_rows > 0) {
+        #Add count deleted comments
         $countDeleteAnswer += $countDeleting->success ? $countDeleting->result : 0;
+
+        #Delete images
+        if (isset($attachListArr) && !empty($attachListArr)) {
+          $this->deleteAttach($attachListArr);
+        }
       } else {
         $error = true;
       }
@@ -1327,7 +1416,7 @@ class Comment extends Model
 
     return !$error ? true : false;
   }
-  
+
   /**
    * Move comments to another page
    *
@@ -1380,7 +1469,7 @@ class Comment extends Model
     }
     return $update->success && $update->result->affected_rows > 0 ? true : false;
   }
- 
+
   /**
    * Recount comments by pages
    *
@@ -1427,7 +1516,7 @@ class Comment extends Model
 
     return $update->success && $update->result->affected_rows !== -1 ? true : false;
   }
- 
+
   /**
    * Set rating the comment
    *
@@ -1543,7 +1632,7 @@ class Comment extends Model
       );
     }
   }
- 
+
   /**
    * Send report on comment
    *
@@ -1573,7 +1662,7 @@ class Comment extends Model
 
     return $insert > 0 ? true : false;
   }
- 
+
   /**
    * Get report on comment
    *
@@ -1658,7 +1747,7 @@ class Comment extends Model
 
     return $update->success && $update->result->affected_rows > 0 ? true : false;
   }
-  
+
   /**
    * Mark all reports as read
    *
@@ -1676,7 +1765,7 @@ class Comment extends Model
 
     return $update->success && $update->result->affected_rows > 0 ? true : false;
   }
-  
+
   /**
    * Delete report by ID
    *
@@ -1752,7 +1841,7 @@ class Comment extends Model
 
     return $flood->success ? $flood->result : array();
   }
- 
+
   /**
    * Get count flood by IP
    *
@@ -1767,7 +1856,7 @@ class Comment extends Model
 
     return $countFlood->success ? $countFlood->result : 0;
   }
-  
+
   /**
    * Add flood in DB
    *
@@ -1792,7 +1881,7 @@ class Comment extends Model
 
     return $insert->success && $insert->result->affected_rows > 0 ? true : false;
   }
-  
+
   /**
    * Update flood in DB
    *
@@ -1813,7 +1902,7 @@ class Comment extends Model
 
     return $update->success && $update->result->affected_rows > 0 ? true : false;
   }
- 
+
   /**
    * Start antiflood
    *
@@ -1851,7 +1940,8 @@ class Comment extends Model
     if (!empty($userComments)) {
       $countComments = count($userComments);
       $userCommentFirst = array_pop($userComments);
-      $userCommentLast = array_shift($userComments);
+      $userCommentLast = !empty($userComments) ? array_shift($userComments) : $userCommentFirst;
+
 
       if ($countComments >= $countFloodMessage && time() - strtotime($userCommentFirst['date_create']) < $timeStartFlood) {
         if ($this->countFloodByIp($ip) >= $commonCountFlood) {
@@ -1875,7 +1965,7 @@ class Comment extends Model
 
     return false;
   }
-  
+
   /**
    * Write string in spam
    *
@@ -1913,7 +2003,7 @@ class Comment extends Model
 
     return $spam->success && $spam->result > 0 ? true : false;
   }
- 
+
   /**
    * Check comment for spam
    *
@@ -1961,7 +2051,7 @@ class Comment extends Model
       return false;
     }
   }
-  
+
   /**
    * Check Stop-Words
    *
@@ -1991,7 +2081,7 @@ class Comment extends Model
       return false;
     }
   }
- 
+
   /**
    * Get Stop-Words
    *
@@ -2101,7 +2191,7 @@ class Comment extends Model
 
     return $spam->success ? $spam->result : array();
   }
- 
+
   /**
    * Delete spam
    *
@@ -2116,7 +2206,7 @@ class Comment extends Model
 
     return $delete->success && $delete->result->affected_rows > 0 ? true : false;
   }
- 
+
   /**
    * Get emoji
    *
@@ -2136,7 +2226,7 @@ class Comment extends Model
 
     return $emoji;
   }
- 
+
   /**
    * Filter comments text
    *

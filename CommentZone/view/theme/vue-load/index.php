@@ -518,6 +518,9 @@
       actionUploadImages: function() {
         var lastIndex = this.mainAttach.length;
         var lenfiles = event.target.files.length;
+        var countAttempts = 0;
+
+        this.sentDisabled = true;
 
         for (const key in event.target.files) {
           if (Object.hasOwnProperty.call(event.target.files, key)) {
@@ -533,14 +536,12 @@
             });
 
             axios.post(this.apiPath, data).then(response => {
+              countAttempts++;
               if (response.data === "limit_size") {
                 this.comments[0].error.text = lenfiles > 1 ? this.language.some_images_size_long : this.language.images_size_long;
                 this.mainAttach.splice(lastIndex, 1);
                 localStorage.setItem('mainAttach-' + this.url, JSON.stringify(this.mainAttach));
-                return false;
-              }
-
-              if (response.data !== false && typeof response.data === 'object') {
+              } else if (response.data !== false && typeof response.data === 'object') {
                 for (const key in response.data) {
                   if (Object.hasOwnProperty.call(response.data, key)) {
                     const element = response.data[key];
@@ -552,6 +553,10 @@
               }
 
               localStorage.setItem('mainAttach-' + this.url, JSON.stringify(this.mainAttach));
+
+              if (countAttempts === lenfiles) {
+                this.sentDisabled = false;
+              }
             });
           }
         }

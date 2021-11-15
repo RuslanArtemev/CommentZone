@@ -109,6 +109,7 @@ export default {
       user: [],
       roles: [],
       password: "",
+      prevAvatar: "",
       saveDisabled: false,
       changedAvatar: false,
       showloadAvatar: false,
@@ -159,6 +160,7 @@ export default {
           uid: this.user.id,
           password: this.password,
           set,
+          prevAvatar: this.prevAvatar,
         })
         .then((response) => {
           if (response.data === true) {
@@ -187,6 +189,7 @@ export default {
     },
     deleteAvatar() {
       this.changedAvatar = true;
+      this.prevAvatar = this.user.avatar;
       this.user.avatar = null;
     },
   },

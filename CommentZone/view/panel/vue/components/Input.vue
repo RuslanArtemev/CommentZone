@@ -135,7 +135,7 @@
             </div>
           </div>
           <div class="col text-end">
-            <button type="button" class="btn btn-outline-light btn-sm" @click="action === 'edit' ? updateComment() : setAnswerComment()">
+            <button type="button" class="btn btn-outline-light btn-sm" :disabled="sentDisabled" @click="action === 'edit' ? updateComment() : setAnswerComment()">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -260,7 +260,7 @@ export default {
           parentType: this.comment.type,
           url: this.comment.pageUrl,
           bindId: this.comment.pageBindId,
-          text: this.answer[this.id],
+          text: this.answer[this.id] || "",
           attach: this.attach[this.id],
           title: this.comment.pageTitle,
         })
@@ -300,7 +300,7 @@ export default {
           type: this.comment.type,
           url: this.comment.pageUrl,
           bindId: this.comment.pageBindId,
-          text: this.answer[this.id],
+          text: this.answer[this.id] || "",
           attach: this.attach[this.id],
           title: this.comment.pageTitle,
         })
@@ -323,6 +323,9 @@ export default {
       }
       let lastIndex = this.attach[this.id].length;
       let lenfiles = e.target.files.length;
+      let countAttempts = 0;
+
+      this.sentDisabled = true;
 
       for (const key in e.target.files) {
         if (Object.hasOwnProperty.call(e.target.files, key)) {
@@ -339,6 +342,7 @@ export default {
           });
 
           axios.post(this.$store.state.apiPath, data).then((response) => {
+            countAttempts++;
             if (response.data === "limit_size") {
               this.$set(
                 this.errors.text,
@@ -350,11 +354,7 @@ export default {
               if (this.action === "answer") {
                 localStorage.setItem("answer-attach-panel", JSON.stringify(this.attach));
               }
-
-              return false;
-            }
-
-            if (response.data !== false && typeof response.data === 'object') {
+            } else if (response.data !== false && typeof response.data === "object") {
               for (const key in response.data) {
                 if (Object.hasOwnProperty.call(response.data, key)) {
                   const element = response.data[key];
@@ -365,8 +365,13 @@ export default {
             } else {
               this.attach[this.id].splice(lastIndex, 1);
             }
+
             if (this.action === "answer") {
               localStorage.setItem("answer-attach-panel", JSON.stringify(this.attach));
+            }
+
+            if (countAttempts === lenfiles) {
+              this.sentDisabled = false;
             }
           });
         }
