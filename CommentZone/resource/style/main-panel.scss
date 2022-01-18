@@ -53,7 +53,7 @@ $switch: #0e9a87;
   overflow: auto;
   background-color: $backgroundBody !important;
   color: $light;
-  a {
+  a, .nav-link {
     color: $light;
     &:hover,
     &.active {
@@ -65,7 +65,7 @@ $switch: #0e9a87;
     border-color: $input;
     color: white;
     &:focus {
-      box-shadow: 0 0 0 0.25rem rgb(60 65 72 / 25%);
+      box-shadow: 0 0 0 0.25rem rgba(60, 65, 72, 0.25);
     }
     &::placeholder {
       color: $textPale;
@@ -94,7 +94,7 @@ $switch: #0e9a87;
       color: lighten($buttonsText, 12%);
     }
     &:focus {
-      box-shadow: 0 0 0 0.25rem rgb(84 96 113 / 15%);
+      box-shadow: 0 0 0 0.25rem rgba(84, 96, 113, 0.15);
     }
     &:active {
       background-color: lighten($buttons, 10%);
@@ -111,7 +111,7 @@ $switch: #0e9a87;
       color: lighten($buttonsText, 12%);
     }
     &:focus {
-      box-shadow: 0 0 0 0.25rem rgb(84 96 113 / 15%);
+      box-shadow: 0 0 0 0.25rem rgba(84, 96, 113, 0.15);
     }
     &:active {
       background-color: lighten($buttons, 10%);

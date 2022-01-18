@@ -14,6 +14,7 @@ import SettingStopWords from '../SettingStopWords.vue'
 import SettingPermissions from '../SettingPermissions.vue'
 import SettingRoles from '../SettingRoles.vue'
 import SettingLanguages from '../SettingLanguages.vue'
+import SettingEmoji from '../SettingEmoji.vue'
 import SettingSMTP from '../SettingSMTP.vue'
 import Login from '../Login.vue'
 import Page404 from '../404.vue'
@@ -39,6 +40,7 @@ const routes = [
     { path: '/setting/permissions', component: SettingPermissions },
     { path: '/setting/roles', component: SettingRoles },
     { path: '/setting/languages', component: SettingLanguages },
+    { path: '/setting/emoji', component: SettingEmoji },
     { path: '/setting/smtp', component: SettingSMTP },
   ]},
   { path: '/login', component: Login, name: 'login' },

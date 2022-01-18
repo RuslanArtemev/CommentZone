@@ -234,9 +234,16 @@
 
 #CommentZone .cz-emoji-block .cz-emoji-box {
   margin-top: 0;
+  height: 290px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-#CommentZone .cz-emoji-block .cz-emoji-box .cz-emoji-element {
+#CommentZone .cz-emoji-block .cz-emoji-box .cz-emoji-block {
+  min-width: 16rem;
+}
+
+#CommentZone .cz-emoji-block .cz-emoji-box .cz-emoji-block .cz-emoji-element {
   padding: 2px 3px;
   margin: 1px;
   display: inline-block;
@@ -244,16 +251,17 @@
   cursor: pointer;
 }
 
-#CommentZone .cz-emoji-block .cz-emoji-box .cz-emoji-element .cz-emoji-item {
-  width: 20px;
-  height: 20px;
+#CommentZone .cz-emoji-block .cz-emoji-box .cz-emoji-block .cz-emoji-element .cz-emoji-item {
+  width: 32px;
+  height: 32px;
   display: inline-block;
-  background-image: url("../../img/emoji/smile.png");
+  background-image: url("../../img/emoji/emoji-many.png");
+  background-size: 84rem;
   background-repeat: no-repeat;
   vertical-align: text-bottom;
 }
 
-#CommentZone .cz-emoji-block .cz-emoji-box .cz-emoji-element:hover {
+#CommentZone .cz-emoji-block .cz-emoji-box .cz-emoji-block .cz-emoji-element:hover {
   background-color: #797979;
 }
 
@@ -261,9 +269,10 @@
   width: 20px;
   height: 20px;
   display: inline-block;
-  background-image: url("../../img/emoji/smile.png");
+  background-image: url("../../img/emoji/emoji-many.png");
   background-repeat: no-repeat;
   vertical-align: text-bottom;
+  margin: 0 0.1rem;
 }
 
 #CommentZone .cz-attach .cz-img-mini {

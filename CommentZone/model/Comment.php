@@ -226,13 +226,17 @@ class Comment extends Model
     if ($update->success && $update->result->affected_rows > 0) {
       $pageId  = $this->getPageIdByCid($id);
 
-      DB::table($this->prefix . 'pages')
-        ->set(array(
-          "count_$type" => array("count_$type", '+', 1),
-        ))
-        ->where('id', (int) $pageId)
-        ->limit(1)
-        ->update();
+      $comment = $this->getById($id, 'posted');
+
+      if ($comment['posted'] === 1) {
+        DB::table($this->prefix . 'pages')
+          ->set(array(
+            "count_$type" => array("count_$type", '+', 1),
+          ))
+          ->where('id', (int) $pageId)
+          ->limit(1)
+          ->update();
+      }
     }
 
     return true;
@@ -336,12 +340,13 @@ class Comment extends Model
    *
    * @param  int $id
    * @param  string $type
+   * @param  mixed $select columns
    * @return mixed array or null
    */
-  public function getById($id)
+  public function getById($id, $select = null)
   {
     $comment = DB::table($this->prefix . 'comments')
-      ->select()
+      ->select($select)
       ->where('id', (int) $id)
       ->first();
 
@@ -436,7 +441,7 @@ class Comment extends Model
       'pageBindId' => (int) $comment['pageBindId'],
       'parentAuthorName' => isset($comment['parentAuthorName']) ? $comment['parentAuthorName'] : '',
       'parentTextOrigin' => isset($comment['parentText']) ? $comment['parentText'] : '',
-      'parentText' => isset($comment['parentText']) ? $this->filter($comment['parentText'], array('emojiSize' => 14)) : '',
+      'parentText' => isset($comment['parentText']) ? $this->filter($this->textCut($comment['parentText'], 280), array('emojiSize' => 14)) : '',
       'rating' => array(
         'uidIncrease' => json_decode($comment['ratingUidIncrease']),
         'uidDecrease' => json_decode($comment['ratingUidDecrease']),
@@ -815,7 +820,7 @@ class Comment extends Model
           'authorRole' => isset($value['authorRole']) ? $value['authorRole'] : '',
           'parentAuthorName' => isset($value['parentAuthorName']) ? $value['parentAuthorName'] : ($value['type'] === 'answer' ? 'DELETED' : null),
           'parentTextOrigin' => $value['parentText'],
-          'parentText' => $this->filter($value['parentText'], array('emojiSize' => 14)),
+          'parentText' => $this->filter($this->textCut($value['parentText'], 280), array('emojiSize' => 14)),
           'newReportsCount' => $value['newReportsCount'],
           'reportsCount' => $value['reports'],
         );
@@ -986,8 +991,6 @@ class Comment extends Model
    */
   public function posted($id, $type)
   {
-    $pageId  = $this->getPageIdByCid($id);
-
     $update = DB::table($this->prefix . 'comments')
       ->set(array(
         'posted' => 1,
@@ -998,13 +1001,19 @@ class Comment extends Model
       ->update();
 
     if ($update->success && $update->result->affected_rows > 0) {
-      $update = DB::table($this->prefix . 'pages')
-        ->set(array(
-          "count_$type" => array("count_$type", '+', 1),
-        ))
-        ->where('id', (int) $pageId)
-        ->limit(1)
-        ->update();
+      $pageId  = $this->getPageIdByCid($id);
+
+      $comment = $this->getById($id, 'moderation');
+
+      if ($comment['moderation'] === 0) {
+        $update = DB::table($this->prefix . 'pages')
+          ->set(array(
+            "count_$type" => array("count_$type", '+', 1),
+          ))
+          ->where('id', (int) $pageId)
+          ->limit(1)
+          ->update();
+      }
     }
 
     return $update->success && $update->result->affected_rows > 0 ? true : false;
@@ -1114,7 +1123,7 @@ class Comment extends Model
       ->where('id', (int) $id)
       ->whereAnd('moderation', 0)
       ->whereAnd('posted', 1)
-      ->count();
+      ->countID();
 
     $update = DB::table($this->prefix . 'comments')
       ->set(array(
@@ -1275,7 +1284,7 @@ class Comment extends Model
         ->where('mid', (int) $id)
         ->whereAnd('moderation', 0)
         ->whereAnd('posted', 1)
-        ->count();
+        ->countID();
 
       #Select attach for delete images
       $commentsAttach = DB::table($this->prefix . 'comments')
@@ -1314,7 +1323,7 @@ class Comment extends Model
         ->where('id', (int) $id)
         ->whereAnd('moderation', 0)
         ->whereAnd('posted', 1)
-        ->count();
+        ->countID();
 
       #Select attach for delete images
       $commentsAttach = DB::table($this->prefix . 'comments')
@@ -1386,7 +1395,7 @@ class Comment extends Model
         ->whereIn('id', $idListArr)
         ->whereAnd('moderation', 0)
         ->whereAnd('posted', 1)
-        ->count();
+        ->countID();
 
       $delete = DB::table($this->prefix . 'comments')
         ->whereIn('id', $idListArr)
@@ -1486,7 +1495,7 @@ class Comment extends Model
           'moderation' => 0,
           'type' => 'main',
         ))
-        ->count();
+        ->countID();
 
       if (!$countCommentMain->success) {
         return false;
@@ -1499,7 +1508,7 @@ class Comment extends Model
           'moderation' => 0,
           'type' => 'answer',
         ))
-        ->count();
+        ->countID();
 
       if (!$countCommentAnswer->success) {
         return false;
@@ -1852,7 +1861,7 @@ class Comment extends Model
   {
     $countFlood = DB::table($this->prefix . 'flood')
       ->where('ip', $ip)
-      ->count();
+      ->countID();
 
     return $countFlood->success ? $countFlood->result : 0;
   }
@@ -1999,7 +2008,7 @@ class Comment extends Model
   {
     $spam = DB::table($this->prefix . 'spam')
       ->where("hash_text = UNHEX(MD5('" . $text . "'))")
-      ->count();
+      ->countID();
 
     return $spam->success && $spam->result > 0 ? true : false;
   }
@@ -2166,7 +2175,7 @@ class Comment extends Model
    */
   public function getCountSpam()
   {
-    $count = DB::table($this->prefix . 'spam')->count();
+    $count = DB::table($this->prefix . 'spam')->countID();
 
     return $count->success ? $count->result : 0;
   }
@@ -2226,6 +2235,28 @@ class Comment extends Model
 
     return $emoji;
   }
+  
+  /**
+   * Cut comment text
+   *
+   * @param  string $text
+   * @param  int $count
+   * @return string
+   */
+  public function textCut($text, $length)
+  {
+    $emojiCodeLenght = 0;
+
+    preg_match_all("/(:.+?:)/ui", $text, $matches);
+
+    if (isset($matches[1])) {
+      $emojiCodeLenght = strlen(implode("", $matches[1])) - count($matches[1]);
+    }
+
+    $length += $emojiCodeLenght;
+
+    return mb_substr($text, 0, $length) . (mb_strlen($text) > $length ? '...' : '');
+  }
 
   /**
    * Filter comments text
@@ -2237,11 +2268,12 @@ class Comment extends Model
   public function filter($text, $params = array())
   {
     $config = App::config('common');
+    $defSize = 32 / $config['emojiSize'];
 
     if ($config['emoji']) {
       $emoji = App::config('emoji');
       foreach ($emoji as $key => &$value) {
-        $value = '[emoji]<span class="cz-emoji-view" data-emoji-code="' . $key . '" style="background-image: url(' . $config['resource'] . '/img/emoji/smile.png); background-position: -' . $value[0] / 20 * (isset($params['emojiSize']) ? $params['emojiSize'] : 20) . 'px -' . $value[1] / 20 * (isset($params['emojiSize']) ? $params['emojiSize'] : 20) . 'px;"></span>[/emoji]';
+        $value = '[emoji]<span class="cz-emoji-view" data-emoji-code="' . $key . '" data-emoji-sign="' . $value['sign'] . '" style="background-image: url(' . $config['resource'] . '/img/emoji/emoji-many.png); background-position: -' . ($value['position'][0] / $defSize) / $config['emojiSize'] * (isset($params['emojiSize']) ? $params['emojiSize'] : $config['emojiSize']) . 'px -' . ($value['position'][1] / $defSize) / $config['emojiSize'] * (isset($params['emojiSize']) ? $params['emojiSize'] : $config['emojiSize']) . 'px; background-size: ' . (isset($params['emojiSize']) ? $params['emojiSize'] : $config['emojiSize']) * 42 . 'px;"></span>[/emoji]';
       }
 
       $text = strtr($text, $emoji);
@@ -2250,7 +2282,7 @@ class Comment extends Model
     $text = htmlentities($text);
 
     if ($config['emoji']) {
-      $text = preg_replace('/\[emoji\]&lt;span class=&quot;cz-emoji-view&quot; data-emoji-code=&quot;(.+?)&quot; style=&quot;background-image: url\((.+?)\); background-position:(.+?);&quot;&gt;&lt;\/span&gt;\[\/emoji\]/iu', '<span class="cz-emoji-view" data-emoji-code="$1" style="background-image: url($2); background-position:$3;"></span>', $text);
+      $text = preg_replace('/\[emoji\]&lt;span class=&quot;cz-emoji-view&quot; data-emoji-code=&quot;(.+?)&quot; data-emoji-sign=&quot;(.+?)&quot; style=&quot;background-image: url\((.+?)\); background-position:(.+?); background-size:(.+?);&quot;&gt;&lt;\/span&gt;\[\/emoji\]/iu', '<span class="cz-emoji-view" data-emoji-code="$1" data-emoji-sign="$2" style="background-image: url($3); background-position:$4; background-size:$5;"></span>', $text);
     }
     if ($config['links']) {
       $text = preg_replace('/(?:(?<=[^\w])|(?<![^\s]))(https?:\/\/[^\s\^`\'"*{}<>]+(?<![.,:;!?]))/iu', '<a href="$1" rel="nofollow" target="_blank">$1</a>', $text);

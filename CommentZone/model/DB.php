@@ -175,7 +175,7 @@ class DB
   {
     $this->sql['action'] = 'select';
 
-    $col = is_array($col) ? $col : func_get_args();
+    $col = is_null($col) || empty($col) ? array('*') : (is_array($col) ? $col : func_get_args());
 
     $this->sql['select'] = $col;
 
@@ -363,6 +363,10 @@ class DB
       'result' => $data,
       'error' => null,
     );
+  }
+
+  public function countId() {
+    return $this->count('id');
   }
 
   public function count($arg = '*')

@@ -1485,6 +1485,61 @@ class ApiController
   }
 
   /**
+   * Get emoji from panel setting
+   *
+   * @param object $post
+   * @return string|false
+   */
+  public function getEmoji($post)
+  {
+    $emoji = require_once(dirname(__DIR__) . "/config/emoji.php");
+
+    if (file_exists(dirname(__DIR__) . "/config/emojiView.php")) {
+      $emojiView = require_once(dirname(__DIR__) . "/config/emojiView.php");
+      if (!is_array($emojiView)) {
+        $emojiView = array();
+      }
+    } else {
+      $emojiView = array();
+    }
+
+    $data = array(
+      'emoji' => $emoji,
+      'emojiView' => $emojiView
+    );
+
+    return json_encode($data);
+  }
+
+  /**
+   * Save selected emoji to a file
+   *
+   * @param object $post
+   * @return bool
+   */
+  public function setEmoji($post)
+  {
+    if (!in_array('admin_panel_access', $this->currentUser['permission'])) {
+      return 'permission';
+    }
+    
+    $emji = [];
+
+    if (!empty($post->data)) {
+      foreach ($post->data as $key => $value) {
+        $emji[$key] = (array) $value;
+      }
+    }
+    
+
+    $data = '<?php ' . PHP_EOL . PHP_EOL . 'return ' . var_export($emji, true) . ';';
+    $pahtConfig = dirname(__DIR__) . '/config/emojiView.php';
+    $result = file_put_contents($pahtConfig, $data);
+
+    return json_encode(!$result ? false : true);
+  }
+
+  /**
    * Get setting for panel
    *
    * @param  object $post
@@ -1550,7 +1605,7 @@ class ApiController
   public function getConfig($post)
   {
     $config = App::config('common');
-    $emoji = App::config('emoji');
+    $emoji = App::config($config['emojiFileName']);
     $language = App::config('language/' . $config['language']);
 
     return json_encode(array(

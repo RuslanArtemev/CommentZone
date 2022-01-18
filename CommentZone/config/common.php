@@ -6,6 +6,8 @@ return array (
   'resource' => '/czResource',
   'api_path' => '/api.php',
   'tmpFolder' => 'tmp',
+  'emojiFileName' => 'emojiView',
+  'emojiSize' => 20,
   'url_query' => true,
   'language' => 'ru-Ru',
   'date_format' => 'dd mm yy hh:ii T',

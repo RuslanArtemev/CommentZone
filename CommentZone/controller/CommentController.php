@@ -24,7 +24,7 @@ class CommentController
     $User = new User();
     $config = $App::config('common');
     $language = $App::config('language/' . $config['language']);
-    $emoji = $App::config('emoji');
+    $emoji = $App::config($config['emojiFileName']);
 
     $Comment = new Comment();
     $comments = $Comment->getViewByPage($this->url, $this->bindId, $config['sort'], 0);

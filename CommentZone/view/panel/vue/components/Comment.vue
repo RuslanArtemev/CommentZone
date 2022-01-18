@@ -49,7 +49,7 @@
     <div class="card-body ms-5">
       <figure v-if="comment.parentText || comment.parentAuthorName" class="blockquote-box ms-4 px-2 text-end">
         <blockquote class="blockquote text-quote">
-          <i v-html="comment.parentText.substr(-comment.parentText.length, 280) + (comment.parentText.length > 280 ? '...' : '')"></i>
+          <i v-html="comment.parentText"></i>
         </blockquote>
         <figcaption class="blockquote-footer text-pale">{{ comment.parentAuthorName }}</figcaption>
       </figure>
@@ -850,7 +850,6 @@ export default {
     .cz-emoji-view {
       width: 14px;
       height: 14px;
-      background-size: 140px;
     }
   }
   .cz-emoji-view {
@@ -859,6 +858,7 @@ export default {
     display: inline-block;
     background-repeat: no-repeat;
     vertical-align: text-bottom;
+    margin: 0 0.1rem;
   }
 }
 </style>

@@ -1,17 +1,29 @@
 <template>
   <div class="p-0 ms-1">
-    <div class="text-pale fs-4 border-bottom border-pale pb-2">{{ $store.state.language.pages }}: {{ count }}</div>
+    <div class="text-pale fs-4 border-bottom border-pale pb-2">
+      {{ $store.state.language.pages }}: {{ count }}
+    </div>
 
     <div class="row my-4">
       <div class="col-sm my-1">
         <div class="input-group">
-          <span class="input-group-text bg-dark-blue border-pale text-pale">{{ $store.state.language.url }}</span>
-          <input type="text me-1" class="form-control" v-model="filters.url" @change="actionFilter()" @keyup.enter="actionFilter()" />
+          <span class="input-group-text bg-dark-blue border-pale text-pale">{{
+            $store.state.language.url
+          }}</span>
+          <input
+            type="text me-1"
+            class="form-control"
+            v-model="filters.url"
+            @change="actionFilter()"
+            @keyup.enter="actionFilter()"
+          />
         </div>
       </div>
       <div class="col-sm my-1">
         <div class="input-group">
-          <span class="input-group-text bg-dark-blue border-pale text-pale">{{ $store.state.language.bind_id }}</span>
+          <span class="input-group-text bg-dark-blue border-pale text-pale">{{
+            $store.state.language.bind_id
+          }}</span>
           <input
             type="text me-1"
             class="form-control"
@@ -23,10 +35,20 @@
       </div>
     </div>
 
-    <div class="row m-0 p-2 bg-box" v-if="currentUser.permission && currentUser.permission.indexOf('manage_comments') !== -1">
+    <div
+      class="row m-0 p-2 bg-box"
+      v-if="
+        currentUser.permission &&
+        currentUser.permission.indexOf('manage_comments') !== -1
+      "
+    >
       <div class="col-auto mt-1">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" v-model="changeSelector" />
+          <input
+            class="form-check-input"
+            type="checkbox"
+            v-model="changeSelector"
+          />
         </div>
       </div>
       <div class="col-10 overflow-hidden">
@@ -57,7 +79,14 @@
             :disabled="checkedId.length > 0 ? false : true"
             @click="recountComments()"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calculator" viewBox="0 0 16 16">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-calculator"
+              viewBox="0 0 16 16"
+            >
               <path
                 d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"
               />
@@ -73,7 +102,14 @@
             :disabled="checkedId.length > 0 ? false : true"
             @click="modalToggle('deleteModal')"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-trash"
+              viewBox="0 0 16 16"
+            >
               <path
                 d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
               />
@@ -89,10 +125,19 @@
     </div>
 
     <div class="my-3 pages-table">
-      <div class="row px-2 py-3 m-0 mb-3 bg-box" v-for="(page, index) in pages" :key="index">
+      <div
+        class="row px-2 py-3 m-0 mb-3 bg-box"
+        v-for="(page, index) in pages"
+        :key="index"
+      >
         <div class="col-auto mt-2">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" :value="page.id" v-model="checkedId" />
+            <input
+              class="form-check-input"
+              type="checkbox"
+              :value="page.id"
+              v-model="checkedId"
+            />
           </div>
         </div>
         <div class="col px-0">
@@ -100,7 +145,9 @@
             <div class="col text-nowrap">
               <div class="fs-small">
                 <span>
-                  <a class="text-info" :href="page.url" target="_blank">{{ page.title }}</a>
+                  <a class="text-info" :href="page.url" target="_blank">{{
+                    page.title
+                  }}</a>
                 </span>
               </div>
               <div class="fs-small">
@@ -110,17 +157,27 @@
             </div>
             <div class="col">
               <div class="fs-small">
-                <span class="text-white">{{ $store.state.language.url }} : </span>
+                <span class="text-white"
+                  >{{ $store.state.language.url }} :
+                </span>
                 <span>{{ page.url }}</span>
               </div>
               <div class="fs-small">
-                <span class="text-white">{{ $store.state.language.bind_id }} : </span>
-                <span>{{ page.bind_id === null || page.bind_id === "" ? "NULL" : page.bind_id }}</span>
+                <span class="text-white"
+                  >{{ $store.state.language.bind_id }} :
+                </span>
+                <span>{{
+                  page.bind_id === null || page.bind_id === ""
+                    ? "NULL"
+                    : page.bind_id
+                }}</span>
               </div>
             </div>
             <div class="col-md">
               <div class="fs-small">
-                <span class="text-white">{{ $store.state.language.comments }} : </span>
+                <span class="text-white"
+                  >{{ $store.state.language.comments }} :
+                </span>
                 <span>{{ page.count_main + page.count_answer }}</span>
               </div>
             </div>
@@ -130,8 +187,13 @@
           <div class="btn-group mt-2">
             <span class="actionsMenu" data-bs-toggle="dropdown"></span>
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
-              <li v-if="currentUser.permission.indexOf('manage_profile') !== -1">
-                <router-link class="dropdown-item" :to="'/pages/' + page.id + '/edit'">
+              <li
+                v-if="currentUser.permission.indexOf('manage_profile') !== -1"
+              >
+                <router-link
+                  class="dropdown-item"
+                  :to="'/pages/' + page.id + '/edit'"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -149,7 +211,9 @@
               </li>
               <li>
                 <button
-                  v-if="currentUser.permission.indexOf('admin_panel_access') !== -1"
+                  v-if="
+                    currentUser.permission.indexOf('admin_panel_access') !== -1
+                  "
                   class="dropdown-item"
                   type="button"
                   @click="modalToggle('moveCommentModal', page.id)"
@@ -171,7 +235,9 @@
               </li>
               <li>
                 <button
-                  v-if="currentUser.permission.indexOf('admin_panel_access') !== -1"
+                  v-if="
+                    currentUser.permission.indexOf('admin_panel_access') !== -1
+                  "
                   class="dropdown-item"
                   type="button"
                   @click="recountComments(page.id)"
@@ -196,7 +262,9 @@
               </li>
               <li>
                 <button
-                  v-if="currentUser.permission.indexOf('admin_panel_access') !== -1"
+                  v-if="
+                    currentUser.permission.indexOf('admin_panel_access') !== -1
+                  "
                   class="dropdown-item"
                   type="button"
                   @click="modalToggle('deleteModal', page.id)"
@@ -227,7 +295,14 @@
     </div>
 
     <div v-if="pages.length > 0" class="col-auto">
-      <pagination class="my-1" :countItems="count" :limitItems="limit" pageKey="p" countButtons="8" @click="getPages($event)"></pagination>
+      <pagination
+        class="my-1"
+        :countItems="count"
+        :limitItems="limit"
+        pageKey="p"
+        countButtons="8"
+        @click="getPages($event)"
+      ></pagination>
     </div>
 
     <modal-confirm
@@ -237,7 +312,12 @@
       @click="actionConfirm('delete', $event)"
     ></modal-confirm>
 
-    <toast v-if="toast.show" :bg="toast.bg" :message="toast.message" @close="$emit ? (toast.show = false) : ''"></toast>
+    <toast
+      v-if="toast.show"
+      :bg="toast.bg"
+      :message="toast.message"
+      @close="$emit ? (toast.show = false) : ''"
+    ></toast>
 
     <loader v-if="loader"></loader>
 
@@ -245,12 +325,20 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header border-0">
-            <h5 class="modal-title">{{ $store.state.language.move_comments }}</h5>
-            <button type="button" class="btn-close btn-close-white" @click="actionConfirm('moveComments', false)"></button>
+            <h5 class="modal-title">
+              {{ $store.state.language.move_comments }}
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              @click="actionConfirm('moveComments', false)"
+            ></button>
           </div>
           <div class="modal-body">
             <div class="mb-3">
-              <label for="input_id_page" class="form-label">{{ $store.state.language.page_id }}</label>
+              <label for="input_id_page" class="form-label">{{
+                $store.state.language.page_id
+              }}</label>
               <input
                 type="text"
                 class="form-control"
@@ -265,7 +353,11 @@
             </div>
           </div>
           <div class="modal-footer border-0">
-            <button type="button" class="btn btn-dark-blue shadow-sm" @click="actionConfirm('moveComments', true)">
+            <button
+              type="button"
+              class="btn btn-dark-blue shadow-sm"
+              @click="actionConfirm('moveComments', true)"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -274,16 +366,31 @@
                 class="bi bi-check-circle"
                 viewBox="0 0 16 16"
               >
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path
+                  d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                />
                 <path
                   d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"
                 />
               </svg>
               {{ $store.state.language.confirm }}
             </button>
-            <button type="button" class="btn btn-outline-light shadow-sm" @click="actionConfirm('moveComments', false)">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+            <button
+              type="button"
+              class="btn btn-outline-light shadow-sm"
+              @click="actionConfirm('moveComments', false)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-x-circle"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                />
                 <path
                   d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
                 />
@@ -334,7 +441,9 @@ export default {
     },
     changeSelector: {
       get() {
-        return this.checkedId.length >= this.pages.length && this.pages.length !== 0;
+        return (
+          this.checkedId.length >= this.pages.length && this.pages.length !== 0
+        );
       },
       set(val) {
         this.checkedId = val
@@ -435,7 +544,10 @@ export default {
             this.getPagesCount();
             this.toastShow(this.$store.state.language.success, "bg-success");
           } else {
-            this.toastShow(this.$store.state.language.delete_page_failed, "bg-danger");
+            this.toastShow(
+              this.$store.state.language.delete_page_failed,
+              "bg-danger"
+            );
           }
           this.deleteModal = false;
         });
@@ -471,11 +583,15 @@ export default {
           this.actionConfirm("moveComments", false);
         });
     },
-    recountComments(id) {
+    recountComments(id = null) {
       this.loader = true;
 
-      if (Object.values(this.checkedId).indexOf(id) === -1) {
-        this.checkedId.push(id);
+      if (id !== null) {
+        this.checkedId = [];
+
+        if (Object.values(this.checkedId).indexOf(id) === -1) {
+          this.checkedId.push(id);
+        }
       }
 
       axios

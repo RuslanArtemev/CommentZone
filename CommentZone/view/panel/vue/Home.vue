@@ -5,8 +5,18 @@
         <nav class="navbar navbar-dark bg-dark-blue shadow-sm rounded">
           <div class="container-fluid">
             <div class="pb-2 pt-1">
-              <span class="me-1 pointer menu-show-button" @click="menuBoxToggle()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="3 3 11 11">
+              <span
+                class="me-1 pointer menu-show-button"
+                @click="menuBoxToggle()"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-list"
+                  viewBox="3 3 11 11"
+                >
                   <path
                     fill-rule="evenodd"
                     d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
@@ -19,12 +29,21 @@
             </div>
 
             <div class="btn-group d-flex">
-              <div type="button" class="dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+              <div
+                type="button"
+                class="dropdown-toggle"
+                data-bs-toggle="dropdown"
+                data-bs-display="static"
+                aria-expanded="false"
+              >
                 {{ $store.state.user.name }}
               </div>
               <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
                 <li>
-                  <router-link class="dropdown-item" :to="'/profile/' + $store.state.user.id">
+                  <router-link
+                    class="dropdown-item"
+                    :to="'/profile/' + $store.state.user.id"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -36,7 +55,9 @@
                       <path
                         d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"
                       />
-                      <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                      <path
+                        d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"
+                      />
                     </svg>
                     {{ $store.state.language.profile }}
                   </router-link>
@@ -51,7 +72,9 @@
                       class="bi bi-door-open"
                       viewBox="0 0 16 16"
                     >
-                      <path d="M8.5 10c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1z" />
+                      <path
+                        d="M8.5 10c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1z"
+                      />
                       <path
                         d="M10.828.122A.5.5 0 0 1 11 .5V1h.5A1.5 1.5 0 0 1 13 2.5V15h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V1.5a.5.5 0 0 1 .43-.495l7-1a.5.5 0 0 1 .398.117zM11.5 2H11v13h1V2.5a.5.5 0 0 0-.5-.5zM4 1.934V15h6V1.077l-6 .857z"
                       />
@@ -67,10 +90,17 @@
     </div>
 
     <div class="row my-2">
-      <div class="col-auto col-lg-3 col-xl-3 col-xxl-2 p-0 sidebar" :class="menuBoxShow ? 'd-block' : 'd-none'">
+      <div
+        class="col-auto col-lg-3 col-xl-3 col-xxl-2 p-0 sidebar"
+        :class="menuBoxShow ? 'd-block' : 'd-none'"
+      >
         <div class="pe-4 pe-lg-2 p-2 me-lg-2 bg-dark-blue shadow-sm rounded">
           <nav class="nav flex-column">
-            <router-link class="nav-link" :class="$route.path === '/' ? 'active' : ''" to="/">
+            <router-link
+              class="nav-link"
+              :class="$route.path === '/' ? 'active' : ''"
+              to="/"
+            >
               <span class="me-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +120,11 @@
               </span>
               <span>{{ $store.state.language.comments }}</span>
             </router-link>
-            <router-link class="nav-link" :class="$route.path === '/pages' ? 'active' : ''" to="/pages">
+            <router-link
+              class="nav-link"
+              :class="$route.path === '/pages' ? 'active' : ''"
+              to="/pages"
+            >
               <span class="me-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -127,7 +161,14 @@
                   </svg>
                 </span>
                 <span>{{ $store.state.language.users }}</span>
-                <span class="menu-arrow" :class="menuUsersShow || /profiles?|banip/g.test($route.path) ? 'arrow-down' : ''">
+                <span
+                  class="menu-arrow"
+                  :class="
+                    menuUsersShow || /profiles?|banip/g.test($route.path)
+                      ? 'arrow-down'
+                      : ''
+                  "
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -143,8 +184,19 @@
                   </svg>
                 </span>
               </div>
-              <div class="collapse ms-3" :class="menuUsersShow || /profiles?|banip/g.test($route.path) ? 'show' : ''">
-                <router-link class="nav-link py-1" :class="/profiles?/g.test($route.path) ? 'active' : ''" to="/profiles">
+              <div
+                class="collapse ms-3"
+                :class="
+                  menuUsersShow || /profiles?|banip/g.test($route.path)
+                    ? 'show'
+                    : ''
+                "
+              >
+                <router-link
+                  class="nav-link py-1"
+                  :class="/profiles?/g.test($route.path) ? 'active' : ''"
+                  to="/profiles"
+                >
                   <span class="me-1">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -157,13 +209,17 @@
                       <path
                         d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"
                       />
-                      <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                      <path
+                        d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"
+                      />
                     </svg>
                   </span>
                   <span>{{ $store.state.language.profiles }}</span>
                 </router-link>
                 <router-link
-                  v-if="$store.state.user.permission.indexOf('manage_users') !== -1"
+                  v-if="
+                    $store.state.user.permission.indexOf('manage_users') !== -1
+                  "
                   class="nav-link py-1"
                   :class="$route.path === '/banip' ? 'active' : ''"
                   to="/banip"
@@ -189,7 +245,14 @@
             <div class="nav-item">
               <div class="nav-link pointer" @click="menuTogle('setting')">
                 <span class="me-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-gear"
+                    viewBox="0 0 16 16"
+                  >
                     <path
                       d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"
                     />
@@ -199,7 +262,14 @@
                   </svg>
                 </span>
                 <span>{{ $store.state.language.system }}</span>
-                <span class="menu-arrow" :class="menuSettingShow || /setting/g.test($route.path) ? 'arrow-down' : ''">
+                <span
+                  class="menu-arrow"
+                  :class="
+                    menuSettingShow || /setting/g.test($route.path)
+                      ? 'arrow-down'
+                      : ''
+                  "
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -215,8 +285,17 @@
                   </svg>
                 </span>
               </div>
-              <div class="collapse ms-3" :class="menuSettingShow || /setting/g.test($route.path) ? 'show' : ''">
-                <router-link class="nav-link py-1" :class="$route.path === '/setting' ? 'active' : ''" to="/setting">
+              <div
+                class="collapse ms-3"
+                :class="
+                  menuSettingShow || /setting/g.test($route.path) ? 'show' : ''
+                "
+              >
+                <router-link
+                  class="nav-link py-1"
+                  :class="$route.path === '/setting' ? 'active' : ''"
+                  to="/setting"
+                >
                   <span class="me-1">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -234,7 +313,11 @@
                   </span>
                   <span>{{ $store.state.language.setting }}</span>
                 </router-link>
-                <router-link class="nav-link py-1" :class="$route.path === '/setting/authorize' ? 'active' : ''" to="/setting/authorize">
+                <router-link
+                  class="nav-link py-1"
+                  :class="$route.path === '/setting/authorize' ? 'active' : ''"
+                  to="/setting/authorize"
+                >
                   <span class="me-1">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -251,7 +334,11 @@
                   </span>
                   <span>{{ $store.state.language.authorize }}</span>
                 </router-link>
-                <router-link class="nav-link py-1" :class="$route.path === '/setting/antiflood' ? 'active' : ''" to="/setting/antiflood">
+                <router-link
+                  class="nav-link py-1"
+                  :class="$route.path === '/setting/antiflood' ? 'active' : ''"
+                  to="/setting/antiflood"
+                >
                   <span class="me-1">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -268,7 +355,11 @@
                   </span>
                   <span>{{ $store.state.language.antiflood }}</span>
                 </router-link>
-                <router-link class="nav-link py-1" :class="$route.path === '/setting/stopwords' ? 'active' : ''" to="/setting/stopwords">
+                <router-link
+                  class="nav-link py-1"
+                  :class="$route.path === '/setting/stopwords' ? 'active' : ''"
+                  to="/setting/stopwords"
+                >
                   <span class="me-1">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -289,7 +380,11 @@
                   </span>
                   <span>{{ $store.state.language.stop_string }}</span>
                 </router-link>
-                <router-link class="nav-link py-1" :class="$route.path === '/setting/spam' ? 'active' : ''" to="/setting/spam">
+                <router-link
+                  class="nav-link py-1"
+                  :class="$route.path === '/setting/spam' ? 'active' : ''"
+                  to="/setting/spam"
+                >
                   <span class="me-1">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -310,9 +405,13 @@
                   <span>{{ $store.state.language.spam_list }}</span>
                 </router-link>
                 <router-link
-                  v-if="$store.state.user.permission.indexOf('manage_role') !== -1"
+                  v-if="
+                    $store.state.user.permission.indexOf('manage_role') !== -1
+                  "
                   class="nav-link py-1"
-                  :class="$route.path === '/setting/permissions' ? 'active' : ''"
+                  :class="
+                    $route.path === '/setting/permissions' ? 'active' : ''
+                  "
                   to="/setting/permissions"
                 >
                   <span class="me-1">
@@ -335,7 +434,9 @@
                   <span>{{ $store.state.language.permissions }}</span>
                 </router-link>
                 <router-link
-                  v-if="$store.state.user.permission.indexOf('manage_role') !== -1"
+                  v-if="
+                    $store.state.user.permission.indexOf('manage_role') !== -1
+                  "
                   class="nav-link py-1"
                   :class="$route.path === '/setting/roles' ? 'active' : ''"
                   to="/setting/roles"
@@ -420,6 +521,31 @@
                 <router-link
                   v-if="$store.state.user.role === 'admin'"
                   class="nav-link py-1"
+                  :class="$route.path === '/setting/emoji' ? 'active' : ''"
+                  to="/setting/emoji"
+                >
+                  <span class="me-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-emoji-smile"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                      />
+                      <path
+                        d="M4.285 9.567a.5.5 0 0 1 .683.183A3.498 3.498 0 0 0 8 11.5a3.498 3.498 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.498 4.498 0 0 1 8 12.5a4.498 4.498 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z"
+                      />
+                    </svg>
+                  </span>
+                  <span>Emoji</span>
+                </router-link>
+                <router-link
+                  v-if="$store.state.user.role === 'admin'"
+                  class="nav-link py-1"
                   :class="$route.path === '/setting/smtp' ? 'active' : ''"
                   to="/setting/smtp"
                 >
@@ -444,12 +570,19 @@
           </nav>
         </div>
       </div>
-      <div class="content p-4 bg-dark-blue" :class="menuBoxShow ? 'col-lg-9 col-xl-9 col-xxl-10' : 'col-12'">
+      <div
+        class="content p-4 bg-dark-blue"
+        :class="menuBoxShow ? 'col-lg-9 col-xl-9 col-xxl-10' : 'col-12'"
+      >
         <router-view></router-view>
       </div>
     </div>
 
-    <toast v-if="this.$store.state.notice.show" :type="this.$store.state.notice.type" :message="this.$store.state.notice.message"></toast>
+    <toast
+      v-if="this.$store.state.notice.show"
+      :type="this.$store.state.notice.type"
+      :message="this.$store.state.notice.message"
+    ></toast>
   </div>
 </template>
 
@@ -476,7 +609,11 @@ export default {
     });
 
     document.addEventListener("click", (e) => {
-      if (window.innerWidth < 991.98 && !this.cssExists(e.target, "sidebar") && !this.cssExists(e.target, "menu-show-button")) {
+      if (
+        window.innerWidth < 991.98 &&
+        !this.cssExists(e.target, "sidebar") &&
+        !this.cssExists(e.target, "menu-show-button")
+      ) {
         this.menuBoxShow = false;
       }
     });
@@ -494,14 +631,16 @@ export default {
       }
     },
     logout() {
-      axios.post(this.$store.state.apiPath, { action: "logout" }).then((respons) => {
-        if (respons.data === true) {
-          this.$store.state.user = [];
-          if (this.$route.name !== "login") {
-            this.$router.push("/login");
+      axios
+        .post(this.$store.state.apiPath, { action: "logout" })
+        .then((respons) => {
+          if (respons.data === true) {
+            this.$store.state.user = [];
+            if (this.$route.name !== "login") {
+              this.$router.push("/login");
+            }
           }
-        }
-      });
+        });
     },
   },
 };

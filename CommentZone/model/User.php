@@ -122,7 +122,7 @@ class User extends Model
       @setcookie('czut', '', time() - 3600, '/', App::config('common', 'cookie_domain'));
     }
   }
-  
+
   /**
    * Check exist sign in params
    *
@@ -141,7 +141,7 @@ class User extends Model
 
     return $count->success && $count->result > 0 ? true : false;
   }
-  
+
   /**
    * Insert sign in parsms
    *
@@ -156,7 +156,7 @@ class User extends Model
 
     return $insert->success && $insert->result->affected_rows > 0 ? true : false;
   }
-  
+
   /**
    * Update sign in parsm
    *
@@ -668,7 +668,7 @@ class User extends Model
 
     return $users->success ? $users->result : array();
   }
-  
+
   /**
    * Get info
    *
@@ -720,7 +720,7 @@ class User extends Model
 
     return $users->success ? $users->result : array();
   }
-  
+
   /**
    * Get sign in params
    *
@@ -732,6 +732,7 @@ class User extends Model
     $signin = DB::table($this->prefix . 'signin')
       ->where('uid', $id)
       ->orderBy('date_update', 'DESC')
+      ->limit(10)
       ->get();
 
     if ($signin->success && !empty($signin->result)) {
@@ -749,7 +750,7 @@ class User extends Model
 
     return $signin->success ? $signin->result : array();
   }
-  
+
   /**
    * Get users by ids
    *
@@ -772,7 +773,7 @@ class User extends Model
 
     return $users->success ? $users->result : array();
   }
-  
+
   /**
    * Get user by authorize params
    *
@@ -811,7 +812,7 @@ class User extends Model
 
     return $users->result;
   }
-  
+
   /**
    * Filetr info from view
    *
@@ -828,7 +829,7 @@ class User extends Model
 
     return $data;
   }
-  
+
   /**
    * check exists publick uid (puid)
    *
@@ -849,7 +850,7 @@ class User extends Model
 
     return $count > 0 ? true : false;
   }
-  
+
   /**
    * Check exists reset code for reset password
    *
@@ -870,7 +871,7 @@ class User extends Model
 
     return $count > 0 ? true : false;
   }
-  
+
   /**
    * Insert reset code for reset password
    *
@@ -890,7 +891,7 @@ class User extends Model
 
     return $insert->success && $insert->result->affected_rows > 0 ? true : false;
   }
-  
+
   /**
    * Delete reset code for reset password
    *
@@ -909,7 +910,7 @@ class User extends Model
 
     return $delete->success && $delete->result->affected_rows > 0 ? true : false;
   }
-  
+
   /**
    * Get reset code for reset password
    *
@@ -929,7 +930,7 @@ class User extends Model
 
     return $select->success ? $select->result : array();
   }
-  
+
   /**
    * Get permissions
    *
@@ -949,7 +950,7 @@ class User extends Model
 
     return $data;
   }
-  
+
   /**
    * Get all users
    *
@@ -993,11 +994,11 @@ class User extends Model
     )->select(array(
       'tu.*',
       'tr.permission',
-      'commentsCount' => DB::table($this->prefix . 'comments')
-        ->select('COUNT(id)')
+      'commentsCount' => DB::table($this->prefix . 'comments', 'tc')
+        ->select('COUNT(tc.id)')
         ->where(array(
-          'uid = tu.id',
-          'posted' => 1
+          'tc.uid = tu.id',
+          'tc.posted' => 1
         ))
     ))
       ->leftJoin($this->prefix . 'role AS tr', 'tr.name', '=', 'tu.role')
@@ -1022,7 +1023,7 @@ class User extends Model
 
     return $users->success ? $users->result : array();
   }
-  
+
   /**
    * Remove user by ids
    *
@@ -1059,7 +1060,7 @@ class User extends Model
 
     return true;
   }
-  
+
   /**
    * Delete user by ids
    *
@@ -1114,7 +1115,7 @@ class User extends Model
 
     return true;
   }
-  
+
   /**
    * Recover deleted users by ids
    *
@@ -1130,7 +1131,7 @@ class User extends Model
 
     return true;
   }
-  
+
   /**
    * Get count users
    *
@@ -1162,7 +1163,7 @@ class User extends Model
 
     return $count->success ? $count->result : 0;
   }
-  
+
   /**
    * Ban by ids
    *
@@ -1188,7 +1189,7 @@ class User extends Model
 
     return $update->success && $update->result->affected_rows > 0 ? true : false;
   }
-  
+
   /**
    * Unban by ids
    *
@@ -1207,7 +1208,7 @@ class User extends Model
 
     return $update->success && $update->result->affected_rows > 0 ? true : false;
   }
-  
+
   /**
    * Ban user ip by ids
    *
@@ -1233,7 +1234,7 @@ class User extends Model
 
     return $insert->success && $insert->result->affected_rows > 0 ? true : false;
   }
-  
+
   /**
    * Unban user ip by ids
    *
@@ -1248,7 +1249,7 @@ class User extends Model
 
     return $delete->success && $delete->result->affected_rows > 0 ? true : false;
   }
-  
+
   /**
    * Unban user ip by ID
    *
@@ -1272,7 +1273,7 @@ class User extends Model
 
     return $ban->success && $ban->result > 0 ? true : false;
   }
- 
+
   /**
    * Get count banned IP
    *
@@ -1299,7 +1300,7 @@ class User extends Model
 
     return $count->success ? $count->result : 0;
   }
- 
+
   /**
    * Get banned IP
    *
@@ -1332,7 +1333,7 @@ class User extends Model
 
     return $ips->success ? $ips->result : array();
   }
-  
+
   /**
    * Update user info
    *
@@ -1350,7 +1351,7 @@ class User extends Model
 
     return $update->success && $update->result->affected_rows !== -1 ? true : false;
   }
-  
+
   /**
    * Get uid by IP
    *
@@ -1367,7 +1368,7 @@ class User extends Model
 
     return $users->success && !empty($users->result) ? $users->result['id'] : 0;
   }
-  
+
   /**
    * Get IP
    *

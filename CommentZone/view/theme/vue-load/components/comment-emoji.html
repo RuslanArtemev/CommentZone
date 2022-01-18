@@ -1,7 +1,7 @@
 <script type="text/x-template" id="comment-emoji-template">
-  <div class="col px-2" style="min-width: 15rem;">
+  <div class="col px-2 cz-emoji-block">
     <div v-for="(item, key) in $root.emoji" :key="key" class="cz-emoji-element" @click="insertEmoji(key)">
-      <span class="cz-emoji-item" :style="'background-position: -' + item[0] + 'px -' + item[1] + 'px;'"></span>
+      <span class="cz-emoji-item" :style="'background-position: -' + item['position'][0] + 'px -' + item['position'][1] + 'px;'"></span>
     </div>
   </div>
 </script>
