@@ -256,7 +256,7 @@
   height: 32px;
   display: inline-block;
   background-image: url("../../img/emoji/emoji-many.png");
-  background-size: 84rem;
+  background-size: 1344px;
   background-repeat: no-repeat;
   vertical-align: text-bottom;
 }
@@ -269,7 +269,6 @@
   width: 20px;
   height: 20px;
   display: inline-block;
-  background-image: url("../../img/emoji/emoji-many.png");
   background-repeat: no-repeat;
   vertical-align: text-bottom;
   margin: 0 0.1rem;
