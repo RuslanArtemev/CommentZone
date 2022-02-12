@@ -1,15 +1,20 @@
 <template>
-  <div class="col px-2" style="min-width: 15rem">
-    <div v-for="(item, key) in $store.state.config.emojiView" :key="key" class="emoji-element" @click="insertEmoji(key)">
+  <div class="col px-2 emoji-block">
+    <div
+      v-for="(item, key) in $store.state.config.emojiView"
+      :key="key"
+      class="emoji-element"
+      @click="insertEmoji(key)"
+    >
       <span
         class="emoji-item"
         :style="
           'background-image: url(' +
           $store.state.config.resource +
-          '/img/emoji/smile.png); background-position: -' +
-          item[0] +
+          '/img/emoji/emoji-many.png); background-position: -' +
+          item['position'][0] +
           'px -' +
-          item[1] +
+          item['position'][1] +
           'px;'
         "
       ></span>
@@ -36,7 +41,10 @@ export default {
 
       this.$set(this.$parent.answer, this.prefixId, el.value);
       if (this.$parent.action === "answer") {
-        localStorage.setItem("answer-panel", JSON.stringify(this.$parent.answer));
+        localStorage.setItem(
+          "answer-panel",
+          JSON.stringify(this.$parent.answer)
+        );
       }
     },
   },
@@ -45,21 +53,26 @@ export default {
 
 <style lang="scss" scoped>
 #commentzone {
-  .emoji-element {
-    padding: 2px 3px;
-    margin: 1px;
-    display: inline-block;
-    border-radius: 10%;
-    cursor: pointer;
-    .emoji-item {
-      width: 20px;
-      height: 20px;
+  .emoji-block {
+    min-width: 16rem;
+    .emoji-element {
+      padding: 2px 3px;
+      margin: 1px;
       display: inline-block;
-      background-repeat: no-repeat;
-      vertical-align: text-bottom;
-    }
-    &:hover {
-      background-color: #797979;
+      border-radius: 10%;
+      cursor: pointer;
+      .emoji-item {
+        width: 32px;
+        height: 32px;
+        display: inline-block;
+        // background-image: url("../../img/emoji/emoji-many.png");
+        background-size: 1344px;
+        background-repeat: no-repeat;
+        vertical-align: text-bottom;
+      }
+      &:hover {
+        background-color: #797979;
+      }
     }
   }
 }

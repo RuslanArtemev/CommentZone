@@ -1412,6 +1412,9 @@ class ApiController
 
     if (!empty($users)) {
       foreach ($users as $user) {
+        echo '<pre>';
+        print_r($user);
+        echo '</pre>';
         if (!in_array('admin_panel_access', $user['permission'])) {
           $idList[] = $user['id'];
           $ipList[] = array(
@@ -2171,9 +2174,10 @@ class ApiController
       $User = new User();
       $SendMail = new SendMail();
       $approvedComment = $Comment->getViewById($post->id);
-      $commentUser = $User->getInfo((int) $approvedComment['uid']);
 
-      $link = Helper::getHost() . $post->url . '#' . $post->id;
+      $commentUser = $User->getInfo((int) $approvedComment['authorId']);
+
+      $link = Helper::getHost() . $approvedComment['pageUrl'] . '#' . $post->id;
       $language = App::config('language/' . $config['language']);
 
       /**

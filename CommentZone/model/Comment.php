@@ -434,7 +434,7 @@ class Comment extends Model
       ),
       'textOrigin' => (int) $comment['posted'] === 1 ? $comment['text'] : '',
       'text' => (int) $comment['posted'] === 1 ? $this->filter($comment['text']) : $this->language['comment_deleted'],
-      'attach' => (int) $comment['posted'] === 1 ? json_decode($comment['attach']) : null,
+      'attach' => (int) $comment['posted'] === 1 && !empty($comment['attach']) ? json_decode($comment['attach']) : null,
       'countChild' => 0,
       'pageTitle' => $comment['pageTitle'],
       'pageUrl' => $comment['pageUrl'],
@@ -443,8 +443,8 @@ class Comment extends Model
       'parentTextOrigin' => isset($comment['parentText']) ? $comment['parentText'] : '',
       'parentText' => isset($comment['parentText']) ? $this->filter($this->textCut($comment['parentText'], 280), array('emojiSize' => 14)) : '',
       'rating' => array(
-        'uidIncrease' => json_decode($comment['ratingUidIncrease']),
-        'uidDecrease' => json_decode($comment['ratingUidDecrease']),
+        'uidIncrease' =>  !empty($comment['ratingUidIncrease']) ? json_decode($comment['ratingUidIncrease']) : null,
+        'uidDecrease' => !empty($comment['ratingUidDecrease']) ? json_decode($comment['ratingUidDecrease']) : null,
         'increase' => isset($comment['ratingIncrease']) ? (int) $comment['ratingIncrease'] : 0,
         'decrease' => isset($comment['ratingDecrease']) ? (int) $comment['ratingDecrease'] : 0,
       ),
@@ -568,10 +568,10 @@ class Comment extends Model
             ),
             'textOrigin' => (int) $value['posted'] === 1 ? $value['text'] : '',
             'text' => (int) $value['posted'] === 1 ? $this->filter($value['text']) : $this->language['comment_deleted'],
-            'attach' => (int) $value['posted'] === 1 ? json_decode($value['attach']) : null,
+            'attach' => (int) $value['posted'] === 1 && !empty($value['attach']) ? json_decode($value['attach']) : null,
             'rating' => array(
-              'uidIncrease' => json_decode($value['ratingUidIncrease']),
-              'uidDecrease' => json_decode($value['ratingUidDecrease']),
+              'uidIncrease' => !empty($value['ratingUidIncrease']) ? json_decode($value['ratingUidIncrease']) : null,
+              'uidDecrease' => !empty($value['ratingUidDecrease']) ? json_decode($value['ratingUidDecrease']) : null,
               'increase' => isset($value['ratingIncrease']) ? (int)$value['ratingIncrease'] : 0,
               'decrease' => isset($value['ratingDecrease']) ? (int)$value['ratingDecrease'] : 0,
             ),
@@ -651,10 +651,10 @@ class Comment extends Model
               ),
               'textOrigin' => (int) $value['posted'] === 1 ? $value['text'] : '',
               'text' => (int) $value['posted'] === 1 ? $this->filter($value['text']) : $this->language['comment_deleted'],
-              'attach' => (int) $value['posted'] === 1 ? json_decode($value['attach']) : null,
+              'attach' => (int) $value['posted'] === 1 && !empty($value['attach']) ? json_decode($value['attach']) : null,
               'rating' => array(
-                'uidIncrease' => json_decode($value['ratingUidIncrease']),
-                'uidDecrease' => json_decode($value['ratingUidDecrease']),
+                'uidIncrease' => !empty($value['ratingUidIncrease']) ? json_decode($value['ratingUidIncrease']) : null,
+                'uidDecrease' => !empty($value['ratingUidDecrease']) ? json_decode($value['ratingUidDecrease']) : null,
                 'increase' => isset($value['ratingIncrease']) ? (int) $value['ratingIncrease'] : 0,
                 'decrease' => isset($value['ratingDecrease']) ? (int) $value['ratingDecrease'] : 0,
               ),
@@ -798,10 +798,10 @@ class Comment extends Model
           'path' => $value['path'],
           'textOrigin' => $value['text'],
           'text' => $this->filter($value['text']),
-          'attach' => json_decode($value['attach']),
+          'attach' =>  !empty($value['attach']) ? json_decode($value['attach']) : null,
           'rating' => array(
-            'uidIncrease' => json_decode($value['ratingUidIncrease']),
-            'uidDecrease' => json_decode($value['ratingUidDecrease']),
+            'uidIncrease' => !empty($value['ratingUidIncrease']) ? json_decode($value['ratingUidIncrease']) : null,
+            'uidDecrease' => !empty($value['ratingUidDecrease']) ? json_decode($value['ratingUidDecrease']) : null,
             'increase' => isset($value['ratingIncrease']) ? (int) $value['ratingIncrease'] : 0,
             'decrease' => isset($value['ratingDecrease']) ? (int) $value['ratingDecrease'] : 0,
           ),
@@ -1807,7 +1807,7 @@ class Comment extends Model
         ->update();
     }
 
-    return $delete > 0 ? true : false;
+    return $delete->result->affected_rows > 0 ? true : false;
   }
 
   /**
@@ -2245,6 +2245,10 @@ class Comment extends Model
    */
   public function textCut($text, $length)
   {
+    if (empty($text)) {
+      return '';
+    }
+
     $emojiCodeLenght = 0;
 
     preg_match_all("/(:.+?:)/ui", $text, $matches);

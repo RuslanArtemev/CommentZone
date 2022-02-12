@@ -705,7 +705,7 @@ class User extends Model
       ->first();
 
     if ($users->success && !empty($users->result)) {
-      $users->result['avatar'] = json_decode($users->result['avatar']);
+      $users->result['avatar'] = !empty($users->result['avatar']) ? json_decode($users->result['avatar']) : null;
       $users->result['permission'] = json_decode($users->result['permission']);
       $users->result['ban_datetime_format'] = !empty($users->result['ban_datetime']) ? Helper::changeDate(date('d.m.Y H:i', $users->result['ban_datetime'])) : '';
       $users->result['datePublished'] = array(
@@ -760,7 +760,15 @@ class User extends Model
   public function getByIdList($idList)
   {
     $users = DB::table($this->prefix . 'users', 'tu')
-      ->select('tu.*', 'tr.permission')
+      ->select(array(
+        'tu.*',
+        'tr.permission',
+        'ip' => DB::table($this->prefix . 'signin', 'ts')
+          ->select('ts.ip')
+          ->where('ts.uid = tu.id')
+          ->orderBy('ts.date_update', 'DESC')
+          ->limit(1)
+      ))
       ->leftJoin($this->prefix . 'role AS tr', 'tr.name', '=', 'tu.role')
       ->whereIn('tu.id', $idList)
       ->get();

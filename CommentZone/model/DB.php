@@ -939,12 +939,12 @@ class DB
   protected function execute()
   {
     $params = require dirname(__DIR__) . '/config/db.php';
-    $mysqli = new mysqli($params['host'], $params['user'], $params['password'], $params['base_name']);
+    $mysqli = @new mysqli($params['host'], $params['user'], $params['password'], $params['base_name']);
 
     if ($mysqli->connect_errno > 0) {
       return (object) array(
         'success' => false,
-        'error' => $mysqli->connect_error
+        'error' => 'MySql: ' . $mysqli->connect_error
       );
     }
 
@@ -959,7 +959,7 @@ class DB
     if ($this->mysqli->errno > 0) {
       return (object) array(
         'success' => false,
-        'error' => $this->mysqli->error
+        'error' => 'MySql: ' . $this->mysqli->error
       );
     }
 

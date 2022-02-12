@@ -441,7 +441,8 @@ class InstallController
   public function getLanguages()
   {
     $pathLanguage = dirname(__DIR__) . '/config/language';
-    $languages = array_splice(scandir($pathLanguage), 2);
+    $dirLanguage = scandir($pathLanguage);
+    $languages = array_splice($dirLanguage, 2);
 
     $languages = array_map(function ($a) {
       return str_replace('.php', '', $a);

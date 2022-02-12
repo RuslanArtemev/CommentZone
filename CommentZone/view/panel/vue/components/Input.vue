@@ -540,6 +540,9 @@ export default {
     }
     .emoji-box {
       margin-top: 0;
+      height: 290px;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
   }
 }

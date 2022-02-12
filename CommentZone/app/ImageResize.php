@@ -314,7 +314,7 @@ class ImageResize
             }
         }
 
-        imagecopyresampled(
+        @imagecopyresampled(
             $dest_image,
             $this->source_image,
             $this->dest_x,

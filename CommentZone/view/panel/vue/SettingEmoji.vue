@@ -131,15 +131,6 @@ export default {
           }
         });
     },
-    // setSetting() {
-    //   axios.post(this.$store.state.apiPath, { action: "setSetting", setting: this.setting }).then((response) => {
-    //     if (response.data) {
-    //       this.toastShow(this.$store.state.language.success, "bg-success");
-    //     } else {
-    //       this.toastShow(this.$store.state.language.error, "bg-danger");
-    //     }
-    //   });
-    // },
   },
 };
 </script>
