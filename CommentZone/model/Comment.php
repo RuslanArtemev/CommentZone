@@ -2277,7 +2277,7 @@ class Comment extends Model
     if ($config['emoji']) {
       $emoji = App::config('emoji');
       foreach ($emoji as $key => &$value) {
-        $value = '[emoji]<span class="cz-emoji-view" data-emoji-code="' . $key . '" data-emoji-sign="' . $value['sign'] . '" style="background-image: url(' . $config['resource'] . '/img/emoji/emoji-many.png); background-position: -' . ($value['position'][0] / $defSize) / $config['emojiSize'] * (isset($params['emojiSize']) ? $params['emojiSize'] : $config['emojiSize']) . 'px -' . ($value['position'][1] / $defSize) / $config['emojiSize'] * (isset($params['emojiSize']) ? $params['emojiSize'] : $config['emojiSize']) . 'px; background-size: ' . (isset($params['emojiSize']) ? $params['emojiSize'] : $config['emojiSize']) * 42 . 'px;"></span>[/emoji]';
+        $value = '[emoji]<span class="cz-emoji-view" data-emoji-code="' . $key . '" data-emoji-sign="' . $value['sign'] . '" style="background-position: -' . ($value['position'][0] / $defSize) / $config['emojiSize'] * (isset($params['emojiSize']) ? $params['emojiSize'] : $config['emojiSize']) . 'px -' . ($value['position'][1] / $defSize) / $config['emojiSize'] * (isset($params['emojiSize']) ? $params['emojiSize'] : $config['emojiSize']) . 'px; background-size: ' . (isset($params['emojiSize']) ? $params['emojiSize'] : $config['emojiSize']) * 42 . 'px;"></span>[/emoji]';
       }
 
       $text = strtr($text, $emoji);
@@ -2286,7 +2286,7 @@ class Comment extends Model
     $text = htmlentities($text);
 
     if ($config['emoji']) {
-      $text = preg_replace('/\[emoji\]&lt;span class=&quot;cz-emoji-view&quot; data-emoji-code=&quot;(.+?)&quot; data-emoji-sign=&quot;(.+?)&quot; style=&quot;background-image: url\((.+?)\); background-position:(.+?); background-size:(.+?);&quot;&gt;&lt;\/span&gt;\[\/emoji\]/iu', '<span class="cz-emoji-view" data-emoji-code="$1" data-emoji-sign="$2" style="background-image: url($3); background-position:$4; background-size:$5;"></span>', $text);
+      $text = preg_replace('/\[emoji\]&lt;span class=&quot;cz-emoji-view&quot; data-emoji-code=&quot;(.+?)&quot; data-emoji-sign=&quot;(.+?)&quot; style=&quot;background-position:(.+?); background-size:(.+?);&quot;&gt;&lt;\/span&gt;\[\/emoji\]/iu', '<span class="cz-emoji-view" data-emoji-code="$1" data-emoji-sign="$2" style="background-position:$3; background-size:$4;"></span>', $text);
     }
     if ($config['links']) {
       $text = preg_replace('/(?:(?<=[^\w])|(?<![^\s]))(https?:\/\/[^\s\^`\'"*{}<>]+(?<![.,:;!?]))/iu', '<a href="$1" rel="nofollow" target="_blank">$1</a>', $text);

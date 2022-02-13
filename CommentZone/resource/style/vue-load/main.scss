@@ -18,6 +18,8 @@ $uploadIconUrl: "../../img/icons/image-upload.png";
 $videoIconUrl: "../../img/icons/video.png";
 $emojiIconUrl: "../../img/icons/emoji.png";
 
+$emojiIconsViewUrl: "../../img/emoji/emoji-icons.png";
+
 $playVideoIconUrl: "../../img/icons/play_video.png";
 
 #CommentZone {
@@ -242,7 +244,7 @@ $playVideoIconUrl: "../../img/icons/play_video.png";
             width: 32px;
             height: 32px;
             display: inline-block;
-            background-image: url("../../img/emoji/emoji-many.png");
+            background-image: url($emojiIconsViewUrl);
             background-size: 1344px;
             background-repeat: no-repeat;
             vertical-align: text-bottom;
@@ -261,6 +263,7 @@ $playVideoIconUrl: "../../img/icons/play_video.png";
     background-repeat: no-repeat;
     vertical-align: text-bottom;
     margin: 0 0.1rem;
+    background-image: url($emojiIconsViewUrl);
   }
   .cz-attach {
     .cz-img-mini {

@@ -255,7 +255,7 @@
   width: 32px;
   height: 32px;
   display: inline-block;
-  background-image: url("../../img/emoji/emoji-many.png");
+  background-image: url("../../img/emoji/emoji-icons.png");
   background-size: 1344px;
   background-repeat: no-repeat;
   vertical-align: text-bottom;
@@ -272,6 +272,7 @@
   background-repeat: no-repeat;
   vertical-align: text-bottom;
   margin: 0 0.1rem;
+  background-image: url("../../img/emoji/emoji-icons.png");
 }
 
 #CommentZone .cz-attach .cz-img-mini {

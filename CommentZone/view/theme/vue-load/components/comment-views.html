@@ -64,8 +64,8 @@
             <div v-if="$root.user.id" class="col-auto dropdown">
               <div class="dropup">
                 <div class="col-auto p-0 ms-1 pointer" @click="actionCommentControlsToggle(comment.prefixId)">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 256 256" width="20px" height="20px" class="cz-comment-controls">
-                    <path opacity="0.4" d="M80,128a16,16,0,1,1-16-16A16.01833,16.01833,0,0,1,80,128Zm112-16a16,16,0,1,0,16,16A16.01833,16.01833,0,0,0,192,112Zm-64,0a16,16,0,1,0,16,16A16.01833,16.01833,0,0,0,128,112Z"/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="cz-comment-controls" viewBox="0 0 18 18">
+                    <path opacity="0.4" d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
                   </svg>
                 </div>
                 <div class="dropdown-menu cz-comment-control-menu" :class="commentControlsShow(comment.prefixId) ? 'show' : ''" style="font-size:14px;">
