@@ -12,13 +12,15 @@
             :key="'emoji-' + key"
             class="emoji-item"
             :class="emojiSelected[key] ? 'active' : ''"
-            :title="key+' - '+item.name + ' - ' + item.sign"
+            :title="key + ' - ' + item.name + ' - ' + item.sign"
             @mousedown="select(key)"
             @mouseenter="selectHover($event, key)"
           >
             <div
               :style="
-                'width:32px; height: 32px; background: url(/czResource/img/emoji/emoji-many.png) -' +
+                'width:32px; height: 32px; background: url(' +
+                $store.state.config.resource +
+                '/img/emoji/emoji-icons.png) -' +
                 item.position[0] +
                 'px -' +
                 item.position[1] +

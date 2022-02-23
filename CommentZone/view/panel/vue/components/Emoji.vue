@@ -11,7 +11,7 @@
         :style="
           'background-image: url(' +
           $store.state.config.resource +
-          '/img/emoji/emoji-many.png); background-position: -' +
+          '/img/emoji/emoji-icons.png); background-position: -' +
           item['position'][0] +
           'px -' +
           item['position'][1] +

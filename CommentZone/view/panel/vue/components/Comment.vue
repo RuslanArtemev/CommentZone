@@ -850,6 +850,7 @@ export default {
     .cz-emoji-view {
       width: 14px;
       height: 14px;
+      background-image: url("../../../../resource/img/emoji/emoji-icons.png");
     }
   }
   .cz-emoji-view {
@@ -859,6 +860,7 @@ export default {
     background-repeat: no-repeat;
     vertical-align: text-bottom;
     margin: 0 0.1rem;
+    background-image: url("../../../../resource/img/emoji/emoji-icons.png");
   }
 }
 </style>
