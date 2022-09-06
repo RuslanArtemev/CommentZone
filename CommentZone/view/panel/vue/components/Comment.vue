@@ -71,7 +71,7 @@
             ></div>
             <img
               v-if="image"
-              height="100"
+              style="max-widht: 100px"
               :src="
                 image.type === 'image'
                   ? $store.state.config.resource + image.middle

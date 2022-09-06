@@ -29,7 +29,7 @@
 
             <div v-if="comment.attach && comment.attach.length > 0" class="row my-2 mx-1">
               <div v-for="(attach, key) in comment.attach" :key="key" class="col-auto p-1 position-relative pointer" :class="attach && attach.type === 'video' ? 'cz-video-play' : ''" @click="imagePreview(comment.id, key)">
-                <img v-if="attach" height="100" :src="attach.type === 'image' ? $root.config.resource + attach.middle : (attach.resource === 'tiktok' ? $root.config.resource : '') + attach.preview" alt="">
+                <img v-if="attach" style="max-width: 100px;" :src="attach.type === 'image' ? $root.config.resource + attach.middle : (attach.resource === 'tiktok' ? $root.config.resource : '') + attach.preview" alt="">
               </div>
             </div>
           </div>

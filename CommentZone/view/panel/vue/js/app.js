@@ -19,6 +19,7 @@ axios.defaults.headers.common = {
   'Cz-Csrf-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 };
 
+Vue.config.productionTip = false
 Vue.use(VueRouter);
 Vue.use(Vuex);
 Vue.use(Methods);
