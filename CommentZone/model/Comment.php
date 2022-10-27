@@ -293,12 +293,12 @@ class Comment extends Model
 
     $select = DB::table($this->prefix . 'comments')
       ->select()
-      ->where('uid', DB::table($this->prefix . 'signin')
+      ->where([['uid', DB::table($this->prefix . 'signin')
         ->select('uid')
         ->where('ip', $ip)
         ->orderBy('id', 'DESC')
-        ->limit(1))
-      ->whereOr('uid', $uid)
+        ->limit(1)], 'OR', ['uid', $uid]])
+      ->whereAnd('posted', 1)
       ->orderBy('id', 'DESC')
       ->limit($limit);
     if ($limit > 1) {
@@ -2043,7 +2043,7 @@ class Comment extends Model
       if ((int) $percent === 100) {
         $countSpamHard++;
       }
-      if ($percent > 75) {
+      if ((int) $percent > 75) {
         $countSpamMedium++;
       }
     }
