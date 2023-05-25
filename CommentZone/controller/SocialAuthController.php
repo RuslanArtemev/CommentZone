@@ -102,7 +102,7 @@ class SocialAuthController
       'grant_type' => 'authorization_code',
     );
 
-    $user = $this->curl('http://api.odnoklassniki.ru/oauth/token.do', urldecode(http_build_query($params)));
+    $user = $this->curl('https://api.odnoklassniki.ru/oauth/token.do', urldecode(http_build_query($params)));
 
     if (!isset($user['access_token'])) {
       exit('Error');

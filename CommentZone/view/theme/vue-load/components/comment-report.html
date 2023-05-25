@@ -7,7 +7,7 @@
           <button type="button" class="btn-close"></button>
         </div>
         <div class="modal-body py-0">
-          <textarea rows="3" v-focus auto-height v-model.trim="text" class="form-control"></textarea>
+          <textarea rows="3" v-focus v-auto-height v-model.trim="text" class="form-control"></textarea>
         </div>
         <div class="modal-footer border-0">
           <span class="cz-count-text font-weight-light me-2" :class="text.length > $root.config.report_length ? 'text-danger' : 'text-black-50'">
